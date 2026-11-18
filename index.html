@@ -67,14 +67,8 @@ main{max-width:1200px;margin:auto;padding:20px 16px 80px}
 @media(max-width:900px){.explore{grid-template-columns:1fr}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
 #map{height:520px;border-radius:var(--r);border:1px solid var(--line)}
-#map,#world{isolation:isolate;z-index:0;position:relative}
+#map{isolation:isolate;z-index:0;position:relative}
 @media(max-width:900px){#map{height:380px}}
-.world-head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;margin:36px 0 12px}
-.world-head h2{margin:0 0 4px;font-size:26px}.world-head p{margin:0;color:var(--muted);font-size:14px}
-#world{height:520px;border-radius:var(--r);border:1px solid var(--line);background:#0e0e16}
-@media(max-width:900px){#world{height:360px}}
-.wpop{min-width:190px}.wpop div{padding:6px 0;border-bottom:1px dashed var(--line)}.wpop div:last-child{border:0}
-.wpop small{color:var(--muted)}
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
 .chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px}
 .chip.on{background:var(--panel2);border-color:var(--muted)}
@@ -209,8 +203,6 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
   .controls{flex-wrap:wrap}
   .range{margin-left:0;width:100%}.range input{flex:1}
   #map{height:300px}
-  #world{height:300px}
-  .world-head{margin-top:28px}.world-head h2{font-size:21px}.world-head p{display:none}
   .legend{gap:6px 10px}
   .card{padding:12px}
   /* listes et sections repliables */
@@ -290,11 +282,6 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
         <div class="list" id="list"></div>
       </div>
     </div>
-    <div class="world-head">
-      <div><h2>🌍 Les courses dans le monde</h2><p id="worldSub"></p></div>
-      <div class="legend" id="worldLegend"></div>
-    </div>
-    <div id="world"></div>
   </section>
 
   <!-- PACKAGE -->
@@ -484,7 +471,7 @@ function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clea
 $("#nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;go(b.dataset.v)};
 function go(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
   document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
-  if(v==="explore")setTimeout(()=>{map.invalidateSize();world.invalidateSize()},50);
+  if(v==="explore")setTimeout(()=>map.invalidateSize(),50);
   if(v==="package")renderPackage(); if(v==="races")renderRaces(); if(v==="premium")renderPremium();
   window.scrollTo({top:0,behavior:"smooth"})}
 
@@ -505,7 +492,6 @@ function renderEvents(){
     <span class="date">${fmtRange(e)}</span>
     <b>${e.flag} ${e.city}</b><small>${e.country}<span class="vn"> · ${e.venue}</span></small>
     <div class="tags">${e.tag?`<span class="tg hot">${e.tag}</span>`:""}${e.venueKnown?"":`<span class="tg">lieu à confirmer</span>`}</div></button>`).join("")||`<p style="color:var(--muted)">Aucune course pour ces filtres.</p>`;
-  S.filtered=list;renderWorld();
   $("#tba").innerHTML=`<b>Bientôt :</b> ${TBA.join(" · ")} (date à venir). Le calendrier juillet–décembre 2027 (saison 2027/28) n'est pas encore publié par HYROX. <a href="https://hyroxfrance.com/fr/trouve-ta-course/" target="_blank" rel="noopener">Calendrier officiel ↗</a>`;
   const q=$("#evQ");q.oninput=()=>{S.filter.q=q.value;const p=q.selectionStart;renderEvents();const n=$("#evQ");n.focus();n.setSelectionRange(p,p)};
   $("#evM").onchange=e=>{S.filter.month=e.target.value;renderEvents()};
@@ -770,34 +756,6 @@ function renderPremium(){
   document.querySelectorAll(".day").forEach(d=>d.onclick=()=>{S.day=+d.dataset.d;renderPremium()});
   $("#remind").onclick=async()=>{if("Notification"in window){let r="denied";try{r=await Notification.requestPermission()}catch(e){}if(r==="granted"){new Notification("8Stations · Prépa",{body:"💧 Pense à boire un grand verre d'eau !"});return toast("🔔 Rappels activés")}}toast("🔔 Rappels activés (en app mobile : notifications push)")};
 }
-
-/* ======================= PLANISPHÈRE ======================= */
-const RCOL={"Europe":"#FF2E88","Amérique du Nord":"#2EC5FF","Amérique du Sud":"#B8FF3D","Asie-Pacifique":"#8B5CFF","Afrique":"#FFB23E"};
-const world=L.map("world",{worldCopyJump:true,minZoom:2,maxZoom:10,scrollWheelZoom:false,zoomSnap:.5}).setView([25,10],2);
-{const b=baseLayers(world);if(b["🗺️ Plan"]){world.removeLayer(b["🗺️ Plan"]);b["🌙 Sombre"].addTo(world);}}
-world.on("focus",()=>world.scrollWheelZoom.enable());world.on("blur",()=>world.scrollWheelZoom.disable());
-const wgrp=L.layerGroup().addTo(world);
-function renderWorld(){
-  wgrp.clearLayers();const list=S.filtered||upcoming();
-  const spots={};list.forEach(e=>{const k=e.lat.toFixed(2)+","+e.lng.toFixed(2);(spots[k]=spots[k]||[]).push(e)});
-  Object.values(spots).forEach(evs=>{
-    const e0=evs[0],sel=evs.some(e=>e.id===S.ev.id),c=RCOL[e0.region];
-    const m=L.circleMarker([e0.lat,e0.lng],{radius:sel?11:evs.length>1?8:6,color:sel?"#fff":c,weight:sel?3:1.5,fillColor:c,fillOpacity:sel?1:.75}).addTo(wgrp);
-    m.bindTooltip(`${e0.flag} <b>${e0.city}</b>${evs.length>1?` · ${evs.length} courses`:` · ${fmtRange(e0)}`}`,{direction:"top",offset:[0,-6]});
-    m.bindPopup(`<div class="wpop">${evs.map(e=>`<div><b>${e.flag} ${e.city}</b>${e.tag?` <span class="tg hot">${e.tag}</span>`:""}<br><small>${fmtRange(e)} · ${e.venue}</small><br>
-      <button class="btn sm" style="margin-top:6px" onclick="pickWorld('${e.id}')">Organiser mon voyage →</button></div>`).join("")}</div>`);
-    if(sel)m.bringToFront();
-  });
-  const fk=S.filter.region+"|"+S.filter.month+"|"+S.filter.q;
-  if(fk!==S.worldKey){S.worldKey=fk;
-    if(list.length&&(S.filter.region!=="Toutes"||S.filter.q||S.filter.month))world.flyToBounds(L.latLngBounds(list.map(e=>[e.lat,e.lng])).pad(.3),{maxZoom:6,duration:.6});
-    else world.setView([25,10],2);}
-  const regs=[...new Set(list.map(e=>e.region))];
-  $("#worldLegend").innerHTML=Object.entries(RCOL).filter(([r])=>regs.includes(r)).map(([r,c])=>`<span><i style="background:${c}"></i>${r} (${list.filter(e=>e.region===r).length})</span>`).join("");
-  $("#worldSub").textContent=`${list.length} course${list.length>1?"s":""} affichée${list.length>1?"s":""} selon tes filtres · clique sur un point pour l'organiser`;
-}
-window.pickWorld=id=>{world.closePopup();selectEvent(id);$("#events .ev.on")?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
-  document.getElementById("map").scrollIntoView({behavior:"smooth",block:"center"});toast("📍 "+S.ev.city+" sélectionnée")};
 
 /* INIT */
 selectEvent("par26");
