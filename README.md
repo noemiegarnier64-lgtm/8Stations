@@ -1,6 +1,6 @@
 # 8Stations – prototype
 
-Site en ligne (GitHub Pages) : `https://<ton-compte>.github.io/8stations/`
+Site en ligne (GitHub Pages) : `https://noemiegarnier64-lgtm.github.io/8stations/`
 
 - `index.html` : l'application complète (cartes Plan / Sombre / Satellite).
 - `web/8stations.html` : variante pour les pages Claude (fonds de carte intégrés, sans tuiles externes).
