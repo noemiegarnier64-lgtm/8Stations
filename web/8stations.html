@@ -690,7 +690,9 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:1000;background:
 .brand{gap:4px!important}
 .brand em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
-@media(max-width:640px){.bar{flex-wrap:wrap;row-gap:8px}.login{margin-left:auto}nav{order:3;width:100%;margin-left:0}nav button{padding:7px 10px;font-size:14px}}
+nav .ni{display:none}
+.tripsum,.sumtog,.more{display:none}
+.regs{display:contents}
 nav button{background:none;border:0;padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;white-space:nowrap;font-weight:600}
 nav button.on{color:var(--text);background:var(--panel2)}
 nav button .pro{font-size:10px;background:var(--lime);color:#111;border-radius:6px;padding:1px 5px;margin-left:4px}
@@ -724,6 +726,7 @@ main{max-width:1200px;margin:auto;padding-block:20px 80px;padding-left:max(16px,
 @media(max-width:900px){.explore{grid-template-columns:1fr}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
 #map{height:520px;border-radius:var(--r);border:1px solid var(--line)}
+#map,#world{isolation:isolate;z-index:0;position:relative}
 @media(max-width:900px){#map{height:380px}}
 .world-head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;margin:36px 0 12px}
 .world-head h2{margin:0 0 4px;font-size:26px}.world-head p{margin:0;color:var(--muted);font-size:14px}
@@ -759,6 +762,7 @@ input[type=range]{accent-color:var(--pink)}
 /* Package */
 .pkg{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
 @media(max-width:900px){.pkg{grid-template-columns:1fr}}
+.pkg>*,.explore>*{min-width:0}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
 label.f select,label.f input{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--text)}
@@ -818,7 +822,8 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
 .paywall{text-align:center;padding:24px}
 
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--panel2);border:1px solid var(--line);padding:12px 18px;border-radius:12px;transition:.25s;z-index:2000;max-width:90vw}
-.toast.on{transform:translateX(-50%) translateY(0)}
+.toast{opacity:0;pointer-events:none}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
 
 /* Leaflet dark tweaks */
 .leaflet-container.offline{background:radial-gradient(circle,#2A2A3A 1px,transparent 1.2px) 0 0/22px 22px,#0E0E16}
@@ -829,6 +834,72 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
 .pin{width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.5)}
 .pin span{transform:rotate(45deg);font-size:13px}
 .venue{width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;border:2px solid #fff;font-size:20px;box-shadow:0 0 0 6px rgba(255,46,136,.25)}
+
+/* ================= MOBILE (≤ 640 px) : version épurée ================= */
+@media(max-width:640px){
+  :root{--tabh:62px}
+  header{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
+  .bar{gap:10px;padding-block:10px}
+  .login{margin-left:auto;padding:7px 12px;font-size:14px}
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:1100;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+      background:rgba(11,11,18,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+      padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));overflow:visible}
+  nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;font-size:11px;position:relative}
+  nav button .ni{display:block;font-size:20px;line-height:1;filter:grayscale(1);opacity:.6}
+  nav button.on{background:none;color:var(--text)}
+  nav button.on .ni{filter:none;opacity:1}
+  nav button.on .nl{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  nav button .pro{position:absolute;top:0;right:12%;font-size:8px;padding:0 3px;margin:0}
+  main{padding-bottom:calc(var(--tabh) + 24px + env(safe-area-inset-bottom,0px))}
+  #v-package{padding-bottom:84px}
+  .toast{bottom:calc(var(--tabh) + 96px)}
+  .hero h1{font-size:27px;margin:0 0 12px}
+  .hero p{display:none}
+  /* Explorer */
+  .evf{gap:8px}
+  .evf input{flex:1 1 100%;min-width:0}
+  .regs{display:flex;gap:6px;overflow-x:auto;flex-wrap:nowrap;width:100%;scrollbar-width:none;margin:0 -2px;padding:0 2px}
+  .regs::-webkit-scrollbar{display:none}
+  .regs .chip{flex:none}
+  .evf select{flex:1}
+  .events{grid-auto-columns:150px;gap:8px}
+  .ev{padding:12px}.ev b{font-size:16px}.ev .vn{display:none}
+  .tba{display:none}
+  .controls{flex-wrap:wrap}
+  .range{margin-left:0;width:100%}.range input{flex:1}
+  #map{height:300px}
+  #world{height:300px}
+  .world-head{margin-top:28px}.world-head h2{font-size:21px}.world-head p{display:none}
+  .legend{gap:6px 10px}
+  .card{padding:12px}
+  /* listes et sections repliables */
+  .collapsed .alt{display:none}
+  .more{display:block;width:100%;margin-top:4px;padding:10px;border-radius:12px;border:1px dashed var(--line);background:none;color:var(--blue);font-weight:600;cursor:pointer}
+  /* Package */
+  .tripsum{display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;text-align:left;font-size:14px}
+  .tripsum em{font-style:normal;color:var(--blue);font-weight:600;white-space:nowrap}
+  #v-package:not(.form-open) #tripForm{display:none}
+  #tripForm{margin-top:10px}
+  .row{grid-template-columns:1fr 1fr}
+  .flight{padding:10px;gap:10px}
+  .sec{margin:16px 0 8px}
+  .seg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .seg::-webkit-scrollbar{display:none}
+  .seg button{flex:none}
+  .summary{position:fixed;left:0;right:0;top:auto;bottom:calc(var(--tabh) + env(safe-area-inset-bottom,0px));z-index:1050;margin:0;
+    border-radius:18px 18px 0 0;border-bottom:0;box-shadow:0 -10px 30px rgba(0,0,0,.45);
+    display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px 12px;
+    padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));max-height:70vh;overflow:auto}
+  .summary h3,.summary #sum,.summary .note{grid-column:1/-1;display:none}
+  .summary.open h3,.summary.open #sum{display:block}
+  .summary .total{margin:0;flex-direction:column;align-items:flex-start;gap:0}
+  .summary .total b{font-size:26px}
+  .summary .total span{font-size:12px;color:var(--muted)}
+  .sumtog{display:inline;border:0;background:none;color:var(--blue);font-size:12px;cursor:pointer;padding:0 0 0 4px}
+  #book{width:auto!important;padding:12px 16px}
+  /* Mes courses */
+  .races{grid-template-columns:1fr}
+}
 </style>
 <header>
   <div class="bar">
@@ -838,10 +909,10 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
 <circle cx="20" cy="31" r="2.6" fill="#FF2E88"/>
 <g transform="translate(29.8 26) rotate(-20) scale(1.25)"><circle r="5.3" fill="#0B0B12"/><path d="M0 -4.2 L1.1 -1.2 L4.6 0.6 L4.6 1.6 L1.1 0.7 L0.8 3.2 L1.9 4 L1.9 4.8 L0 4.2 L-1.9 4.8 L-1.9 4 L-0.8 3.2 L-1.1 0.7 L-4.6 1.6 L-4.6 0.6 L-1.1 -1.2 Z" fill="#fff"/></g></svg><em>Stations</em></div>
     <nav id="nav">
-      <button data-v="explore" class="on">Explorer</button>
-      <button data-v="package">Mon package</button>
-      <button data-v="races">Mes courses</button>
-      <button data-v="premium">Prépa J‑7<span class="pro">PRO</span></button>
+      <button data-v="explore" class="on"><span class="ni">🧭</span><span class="nl">Explorer</span></button>
+      <button data-v="package"><span class="ni">🎒</span><span class="nl">Mon package</span></button>
+      <button data-v="races"><span class="ni">🏁</span><span class="nl">Mes courses</span></button>
+      <button data-v="premium"><span class="ni">⚡</span><span class="nl">Prépa J‑7</span><span class="pro">PRO</span></button>
     </nav>
     <button class="login" id="loginBtn">Se connecter</button>
   </div>
@@ -888,6 +959,8 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
     <div class="hero"><h1 id="pkgTitle">Ton package</h1><p>Tout est présélectionné au meilleur prix. Modifie ce que tu veux.</p></div>
     <div class="pkg">
       <div class="card">
+        <button class="tripsum" id="tripSum" type="button"></button>
+        <div id="tripForm">
         <div class="row">
           <label class="f">Aéroport de départ<select id="dep"></select></label>
           <label class="f">Aller<input type="date" id="dIn"></label>
@@ -897,6 +970,7 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
           <label class="f">Voyageurs<div class="stepper"><button data-s="pax" data-d="-1">−</button><b id="pax">1</b><button data-s="pax" data-d="1">+</button></div></label>
           <label class="f">Bagages soute (23 kg)<div class="stepper"><button data-s="bags" data-d="-1">−</button><b id="bags">0</b><button data-s="bags" data-d="1">+</button></div></label>
           <label class="f">Tri<select id="sort"><option value="price">Meilleur prix</option><option value="time">Plus rapide</option></select></label>
+        </div>
         </div>
         <div class="sec">✈️ Transport</div>
         <div id="flights"></div>
@@ -911,7 +985,7 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
         <div class="card summary">
           <h3 style="margin:0 0 8px">Récapitulatif</h3>
           <div id="sum"></div>
-          <div class="total"><span>Total</span><b id="total">0 €</b></div>
+          <div class="total"><span>Total <button class="sumtog" id="sumToggle" type="button">détail ▴</button></span><b id="total">0 €</b></div>
           <button class="btn" style="width:100%" id="book">Réserver le package</button>
           <p class="note">Prototype : prix et disponibilités simulés. En production, réservation via les API partenaires (hôtels, vols, activités).</p>
         </div>
@@ -1053,7 +1127,7 @@ const PLACES=Object.fromEntries(EVENTS.map(e=>[e.id,genPlaces(e)]));
 /* ======================= ÉTAT ======================= */
 const S={ev:EVENTS[0],radius:5,layers:{hotels:true,gyms:true,tours:true},listTab:"hotels",
   dep:"CDG",pax:1,bags:0,sort:"price",dIn:null,dOut:null,hotel:null,flight:null,tours:new Set(),
-  car:{on:false,cat:null,pick:"airport",offer:null,opts:new Set()},
+  open:{},car:{on:false,cat:null,pick:"airport",offer:null,opts:new Set()},
   user:null,premium:false,day:7};
 
 const $=s=>document.querySelector(s), eur=n=>Math.round(n).toLocaleString("fr-FR")+" €";
@@ -1080,12 +1154,12 @@ function renderEvents(){
   const f=S.filter,months=[...new Set(upcoming().map(e=>e.date.slice(0,7)))];
   const list=upcoming().filter(e=>(f.region==="Toutes"||e.region===f.region)&&(!f.month||e.date.startsWith(f.month))&&(!f.q||(e.city+" "+e.country).toLowerCase().includes(f.q.toLowerCase())));
   $("#evFilters").innerHTML=`<input id="evQ" placeholder="🔍 Ville ou pays…" value="${f.q}">
-    ${REGIONS.map(r=>`<button class="chip ${r===f.region?"on":""}" data-reg="${r}">${r}</button>`).join("")}
+    <div class="regs">${REGIONS.map(r=>`<button class="chip ${r===f.region?"on":""}" data-reg="${r}">${r}</button>`).join("")}</div>
     <select id="evM"><option value="">Tous les mois</option>${months.map(m=>`<option value="${m}" ${m===f.month?"selected":""}>${new Date(m+"-01").toLocaleDateString("fr-FR",{month:"long",year:"numeric"})}</option>`).join("")}</select>
     <span class="count">${list.length} course${list.length>1?"s":""}</span>`;
   $("#events").innerHTML=list.map(e=>`<button class="ev ${e.id===S.ev.id?"on":""}" data-id="${e.id}">
     <span class="date">${fmtRange(e)}</span>
-    <b>${e.flag} ${e.city}</b><small>${e.country} · ${e.venue}</small>
+    <b>${e.flag} ${e.city}</b><small>${e.country}<span class="vn"> · ${e.venue}</span></small>
     <div class="tags">${e.tag?`<span class="tg hot">${e.tag}</span>`:""}${e.venueKnown?"":`<span class="tg">lieu à confirmer</span>`}</div></button>`).join("")||`<p style="color:var(--muted)">Aucune course pour ces filtres.</p>`;
   S.filtered=list;renderWorld();
   $("#tba").innerHTML=`<b>Bientôt :</b> ${TBA.join(" · ")} (date à venir). Le calendrier juillet–décembre 2027 (saison 2027/28) n'est pas encore publié par HYROX. <a href="https://hyroxfrance.com/fr/trouve-ta-course/" target="_blank" rel="noopener">Calendrier officiel ↗</a>`;
@@ -1095,7 +1169,7 @@ function renderEvents(){
 $("#evFilters").onclick=e=>{const b=e.target.closest("[data-reg]");if(!b)return;S.filter.region=b.dataset.reg;renderEvents()};
 $("#events").onclick=e=>{const b=e.target.closest(".ev");if(!b)return;selectEvent(b.dataset.id)};
 function selectEvent(id){
-  S.ev=EVENTS.find(e=>e.id===id);S.dIn=addDays(S.ev.date,-1);S.dOut=addDays(S.ev.date,1);S.hotel=null;S.flight=null;S.tours=new Set();S.car.offer=null;
+  S.ev=EVENTS.find(e=>e.id===id);S.dIn=addDays(S.ev.date,-1);S.dOut=addDays(S.ev.date,1);S.hotel=null;S.flight=null;S.tours=new Set();S.car.offer=null;S.open={};
   renderEvents();renderMap();renderList();
 }
 
@@ -1124,7 +1198,7 @@ function baseLayers(m){
     "🌙 Sombre":L.layerGroup([t("Canvas/World_Dark_Gray_Base",{maxZoom:16}),t("Canvas/World_Dark_Gray_Reference",{maxZoom:16})]),
     "🛰️ Satellite":L.layerGroup([t("World_Imagery"),t("Reference/World_Boundaries_and_Places")])
   };
-  L1["🗺️ Plan"].addTo(m);L.control.layers(L1,null,{position:"topright",collapsed:false}).addTo(m);return L1;
+  L1["🗺️ Plan"].addTo(m);L.control.layers(L1,null,{position:"topright",collapsed:matchMedia("(max-width:640px)").matches}).addTo(m);return L1;
 }
 baseLayers(map);
 const grp=L.layerGroup().addTo(map);
@@ -1149,19 +1223,30 @@ document.querySelectorAll("[data-layer]").forEach(b=>b.onclick=()=>{const k=b.da
 $("#radius").oninput=e=>{S.radius=+e.target.value;$("#radiusVal").textContent=S.radius+" km";renderMap();renderList()};
 
 /* ======================= LISTE ======================= */
-$("#listTabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.listTab=b.dataset.t;
+$("#listTabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.listTab=b.dataset.t;S.open.list=false;
   document.querySelectorAll("#listTabs button").forEach(x=>x.classList.toggle("on",x===b));renderList()};
+const isMobile=()=>matchMedia("(max-width:640px)").matches;
+function collapsible(el,key,altCount,label){
+  el.classList.toggle("collapsed",!S.open[key]);
+  if(altCount>0)el.insertAdjacentHTML("beforeend",`<button class="more" data-open="${key}" type="button">${S.open[key]?"Réduire ▴":label}</button>`);
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-open]");if(!b)return;const k=b.dataset.open;S.open[k]=!S.open[k];
+  if(k==="list")renderList();else renderPackage()});
 function renderList(){
   const k=S.listTab,arr=inRadius(PLACES[S.ev.id][k]);
   const best=arr[0]?.id;
-  $("#list").innerHTML=(arr.length?"":`<p style="color:var(--muted)">Aucun résultat dans ce rayon.</p>`)+arr.map(p=>{
+  $("#list").innerHTML=(arr.length?"":`<p style="color:var(--muted)">Aucun résultat dans ce rayon.</p>`)+arr.map((p,i)=>{
     const sel=(k==="hotels"&&S.hotel?.id===p.id)||(k==="tours"&&S.tours.has(p.id));
     const sub=k==="hotels"?`${"★".repeat(p.stars)} · ${p.rating}/10 · ${p.dist.toFixed(1)} km`:k==="gyms"?`${p.dist.toFixed(1)} km${p.hyrox?" · équipement Hyrox-friendly (sled, SkiErg, rameur)":""}`:`⭐ ${p.rating} · ${p.dur} · ${p.dist.toFixed(1)} km`;
-    return `<div class="item ${sel?"sel":""}" data-k="${k}" data-id="${p.id}">
+    return `<div class="item ${sel?"sel":""} ${i>2?"alt":""}" data-k="${k}" data-id="${p.id}">
       <div class="ic" style="background:${COL[k]}22">${EMO[k]}</div>
       <div class="meta"><b>${p.name}${p.id===best?'<span class="badge">MEILLEUR PRIX</span>':""}</b><small>${sub}</small></div>
       <div class="price">${eur(p.price)}<small>${k==="hotels"?"/ nuit":k==="gyms"?"day pass":"/ pers."}</small></div></div>`}).join("")
     +(k!=="gyms"?`<button class="btn" style="margin-top:8px" onclick="go('package')">Voir mon package →</button>`:"");
+  const n=Math.max(0,arr.length-3);
+  $("#list").classList.toggle("collapsed",!S.open.list);
+  if(n){const b=`<button class="more" data-open="list" type="button">${S.open.list?"Réduire ▴":`Voir les ${n} autres ▾`}</button>`;
+    const last=$("#list").querySelector(".btn");last?last.insertAdjacentHTML("beforebegin",b):$("#list").insertAdjacentHTML("beforeend",b)}
 }
 $("#list").onclick=e=>{const it=e.target.closest(".item");if(!it)return;const{k,id}=it.dataset,p=PLACES[S.ev.id][k].find(x=>x.id===id);
   map.setView([p.lat,p.lng],15);
@@ -1209,21 +1294,22 @@ function renderCar(){
     const offers=carOffers();if(!offers.find(o=>o.id===S.car.offer))S.car.offer=offers[0].id;
     h+=`<div class="seg">${[["airport",`🛫 Aéroport (${ev.iata})`],["city","🏙️ Près du site"]].map(([k,l])=>`<button data-pick="${k}" class="${S.car.pick===k?"on":""}"><b>${l}</b><small>${k==="airport"?"Prise et retour à l'arrivée":"Agence à moins de 5 km"}</small></button>`).join("")}</div>
     <div class="seg">${CAR_CATS.map(c=>`<button data-cat="${c.id}" class="${S.car.cat===c.id?"on":""}" ${c.seats<S.pax?"disabled":""}><b>${c.name}</b><small>${c.ex} · ${c.seats} pl. · ${c.bags} 🧳</small></button>`).join("")}</div>
-    ${offers.map((o,i)=>`<div class="flight ${o.id===S.car.offer?"sel":""}" data-car="${o.id}">
+    <div id="carOffers">${offers.map((o,i)=>`<div class="flight ${o.id===S.car.offer?"sel":"alt"}" data-car="${o.id}">
       <div style="font-size:22px">🚗</div><div class="t"><b>${o.agency}${i===0?'<span class="badge">MEILLEUR PRIX</span>':""}</b>
       <small>${o.auto?"Automatique":"Manuelle"} · ${o.unlimited?"km illimités":"300 km/jour"}${o.freeCancel?" · annulation gratuite":""}${o.dist?` · agence à ${o.dist} km du site`:""}</small></div>
-      <div class="price">${eur(o.day*d)}<small>${d} j · ${eur(o.day)}/j</small></div></div>`).join("")}
+      <div class="price">${eur(o.day*d)}<small>${d} j · ${eur(o.day)}/j</small></div></div>`).join("")}</div>
     <div class="seg">${CAR_OPTS.map(o=>`<button data-copt="${o.id}" class="${S.car.opts.has(o.id)?"on":""}"><b>${S.car.opts.has(o.id)?"✅":"➕"} ${o.name}</b><small>+${o.day} €/jour</small></button>`).join("")}</div>
     <p class="carnote">Location du ${fmtDate(S.dIn)} au ${fmtDate(S.dOut)}, alignée sur tes dates de séjour.${ev.region!=="Europe"?" Hors Europe, pense au permis international.":""}</p>`;
   }
   $("#pkgCar").innerHTML=h;
+  if(S.car.on)collapsible($("#carOffers"),"car",3,"Changer de loueur (3 autres) ▾");
 }
 function renderPackage(){
   const ev=S.ev;$("#pkgTitle").innerHTML=`Package <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">${ev.city}</span>`;
   $("#dep").value=S.dep;$("#dIn").value=S.dIn;$("#dOut").value=S.dOut;$("#pax").textContent=S.pax;$("#bags").textContent=S.bags;$("#sort").value=S.sort;
   let fl=flightsFor();fl.sort((a,b)=>S.sort==="price"?a.price-b.price:a.dur-b.dur);
   if(!S.flight||!fl.find(f=>f.id===S.flight))S.flight=fl.slice().sort((a,b)=>a.price-b.price)[0].id;
-  $("#flights").innerHTML=fl.map((f,i)=>`<div class="flight ${f.id===S.flight?"sel":""}" data-f="${f.id}">
+  $("#flights").innerHTML=fl.map((f,i)=>`<div class="flight ${f.id===S.flight?"sel":"alt"}" data-f="${f.id}">
     <div style="font-size:22px">${f.type}</div>
     <div class="t"><b>${f.carrier}</b> ${f.id!=="train"?`· ${S.dep} → ${ev.iata} · départ ${f.out}`:""}
       <small>${Math.floor(f.dur/60)}h${String(f.dur%60).padStart(2,"0")} ${f.stops?"· 1 escale":f.id!=="train"?"· direct":""} ${f.bagIncl?"· bagage inclus":f.bagPrice?"· bagage +"+f.bagPrice+" €":""} ${f.note}</small></div>
@@ -1231,14 +1317,20 @@ function renderPackage(){
   // hôtels : top 4 dans 5 km
   const hs=inRadius(PLACES[ev.id].hotels).slice(0,4);
   if(!S.hotel)S.hotel=hs[0];
-  $("#pkgHotels").innerHTML=hs.concat(hs.find(h=>h.id===S.hotel.id)?[]:[S.hotel]).map(h=>`<div class="flight ${h.id===S.hotel.id?"sel":""}" data-h="${h.id}" style="${h.id===S.hotel.id?"border-color:var(--pink)":""}">
+  $("#pkgHotels").innerHTML=hs.concat(hs.find(h=>h.id===S.hotel.id)?[]:[S.hotel]).map(h=>`<div class="flight ${h.id===S.hotel.id?"sel":"alt"}" data-h="${h.id}" style="${h.id===S.hotel.id?"border-color:var(--pink)":""}">
     <div style="font-size:22px">🏨</div><div class="t"><b>${h.name}</b><small>${"★".repeat(h.stars)} · ${h.rating}/10 · ${h.dist.toFixed(1)} km du site</small></div>
     <div class="price">${eur(h.price)}<small>/ nuit</small></div></div>`).join("");
   const ts=PLACES[ev.id].tours;
-  $("#pkgTours").innerHTML=ts.map(t=>`<div class="flight ${S.tours.has(t.id)?"sel":""}" data-t="${t.id}">
+  $("#pkgTours").innerHTML=ts.map(t=>`<div class="flight ${S.tours.has(t.id)?"sel":"alt"}" data-t="${t.id}">
     <div style="font-size:22px">${S.tours.has(t.id)?"✅":"➕"}</div><div class="t"><b>${t.name}</b><small>⭐ ${t.rating} · ${t.dur} · ${t.dist.toFixed(1)} km</small></div>
     <div class="price">${eur(t.price)}<small>/ pers.</small></div></div>`).join("");
   renderCar();
+  collapsible($("#flights"),"flights",fl.length-1,`Changer de transport (${fl.length-1} autres) ▾`);
+  const nh=$("#pkgHotels").querySelectorAll(".alt").length;collapsible($("#pkgHotels"),"hotels",nh,`Changer d'hôtel (${nh} autres) ▾`);
+  const nt=ts.length-S.tours.size;collapsible($("#pkgTours"),"tours",nt,S.tours.size?`Ajouter une autre excursion ▾`:`➕ Ajouter une excursion (${nt}) ▾`);
+  const nights_=Math.max(1,(new Date(S.dOut)-new Date(S.dIn))/864e5),df=d=>new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
+  $("#tripSum").innerHTML=`<span>🛫 ${S.dep} · ${df(S.dIn)} → ${df(S.dOut)} · 👤 ${S.pax}${S.bags?` · 🧳 ${S.bags}`:""}</span><em>${S.open.form?"Fermer ▴":"Modifier ✎"}</em>`;
+  $("#v-package").classList.toggle("form-open",!!S.open.form);
   renderSummary();
 }
 function computeBudget(ev,opts={}){ // utilisé par le package et "Mes courses"
@@ -1270,6 +1362,8 @@ $("#v-package").addEventListener("click",e=>{
   const co=e.target.closest("[data-car]");if(co){S.car.offer=co.dataset.car;return renderPackage()}
   const op=e.target.closest("[data-copt]");if(op){const id=op.dataset.copt;S.car.opts.has(id)?S.car.opts.delete(id):S.car.opts.add(id);return renderPackage()}
 });
+$("#tripSum").onclick=()=>{S.open.form=!S.open.form;renderPackage()};
+$("#sumToggle").onclick=()=>{const c=$(".summary");c.classList.toggle("open");$("#sumToggle").textContent=c.classList.contains("open")?"masquer ▾":"détail ▴"};
 $("#dep").onchange=e=>{S.dep=e.target.value;S.flight=null;renderPackage()};
 $("#sort").onchange=e=>{S.sort=e.target.value;renderPackage()};
 $("#dIn").onchange=e=>{S.dIn=e.target.value;if(S.dOut<=S.dIn)S.dOut=addDays(S.dIn,1);S.flight=null;renderPackage()};
