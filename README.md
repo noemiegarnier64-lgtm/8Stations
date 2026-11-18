@@ -12,7 +12,6 @@ Ouvre `index.html` dans un navigateur (aucune installation). Calendrier : offici
 - **Explorer** : choix de la course, carte (hôtels / salles / excursions) avec rayon réglable ≤ 5 km, liste triée au meilleur prix.
 - **Mon package** : vol/train + hôtel + location de voiture (optionnelle) + excursions présélectionnés au meilleur prix ; aéroport de départ, dates, voyageurs, bagages, catégorie de voiture, prise en charge (aéroport / près du site) et options modifiables.
 - **Mes courses** (connexion démo) : courses à venir, compte à rebours, budget estimé et épargne mensuelle conseillée.
-- **Outfit** : par course, format solo / duo femmes / duo hommes / duo mixte ; tenues identiques ou couleurs inversées (haut ↔ bas) en duo, short homme assorti en mixte ; looks prêts à porter, couleurs, coupes. **Avatars 3D réalistes** (corps MakeHuman CC0, rendu three.js) réglables : peau, cheveux, taille, muscles, silhouette ; rotation face / profil / dos ; photo en médaillon (gardée sur l'appareil) ; enregistrement par course.
 - **Prépa J-7 (Premium)** : plan jour par jour entraînement / hydratation / nutrition / sommeil + rappels.
 
 ## Passage en production (API à brancher)
@@ -32,6 +31,4 @@ Ouvre `index.html` dans un navigateur (aucune installation). Calendrier : offici
 Next.js (React) + Capacitor pour iOS/Android, ou Expo (React Native + web) — un seul code pour le site et l'app.
 
 ## Crédits
-- Corps 3D : [MakeHuman](http://www.makehumancommunity.org) – maillage, cibles et poids du squelette sous licence CC0 (voir `tools/avatar/`).
-- Rendu 3D : [three.js](https://threejs.org) (MIT).
 - Cartes : Leaflet, OpenFreeMap / OpenMapTiles, Esri.

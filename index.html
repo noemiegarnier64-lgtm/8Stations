@@ -170,74 +170,13 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
 .pin span{transform:rotate(45deg);font-size:13px}
 .venue{width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;border:2px solid #fff;font-size:20px;box-shadow:0 0 0 6px rgba(255,46,136,.25)}
 
-/* ================= OUTFIT ================= */
-.hero h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.ofbar{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:14px}
-.ofbar label.f{min-width:240px;flex:1 1 240px}
-.ofbar .f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
-.ofseg{margin:0}
-.outfit{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;align-items:start}
-.outfit>*{min-width:0}
-@media(max-width:900px){.outfit{grid-template-columns:1fr}}
-.stage{position:relative;border-radius:var(--r);border:1px solid var(--line);overflow:hidden;min-height:500px;display:flex;justify-content:center;align-items:flex-end;gap:4%;padding:56px 12px 30px;
-  background:radial-gradient(circle at 20% 10%,rgba(255,46,136,.28),transparent 45%),radial-gradient(circle at 85% 30%,rgba(46,197,255,.22),transparent 45%),linear-gradient(#17172a,#0d0d16)}
-.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:64px;background:repeating-linear-gradient(90deg,#ffffff10 0 2px,transparent 2px 60px),linear-gradient(transparent,#00000066);border-top:3px solid #ffffff22}
-.stage .tag{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);z-index:1}
-.stage .tag b{color:var(--text);font-family:Archivo}
-.stage .start{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:Archivo;font-weight:900;letter-spacing:.4em;font-size:13px;color:#ffffff40;z-index:1}
-.of3d{position:absolute;inset:36px 0 0 0;z-index:2}
-.stage{min-height:600px}
-.stage .ofload{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px;z-index:1}
-.stage.ready .ofload{display:none}
-.stage .athl{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:space-around;z-index:3;pointer-events:none}
-.stage .athl span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);background:#0B0B12cc;padding:3px 10px 3px 4px;border-radius:999px}
-.stage .athl img{width:24px;height:24px;border-radius:50%;object-fit:cover}
-.stage .views{position:absolute;top:44px;right:12px;display:flex;gap:4px;z-index:3}
-.stage .views button{border:1px solid var(--line);background:#0B0B12cc;border-radius:8px;padding:4px 8px;font-size:12px;cursor:pointer;color:var(--text)}
-.stage .hint{position:absolute;top:48px;left:16px;font-size:12px;color:var(--muted);z-index:3}
-.stage.flat .views,.stage.flat .hint{display:none}
-.flatcast{position:absolute;inset:56px 12px 30px;display:flex;justify-content:center;align-items:flex-end;gap:4%}
-.athcard .mini{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.morph{display:grid;grid-template-columns:76px 1fr;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
-.morph input{width:100%;accent-color:var(--pink)}
-.ath{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 1 auto;min-width:0}
-.ath svg{height:420px;width:auto;max-width:100%;filter:drop-shadow(0 12px 18px rgba(0,0,0,.5))}
-.ath small{font-size:12px;color:var(--muted);background:#0B0B12aa;padding:2px 8px;border-radius:999px}
-.ofpanel h4{margin:16px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.ofpanel h4:first-child{margin-top:0}
-.sws{display:flex;flex-wrap:wrap;gap:8px}
-.sw{width:30px;height:30px;border-radius:50%;border:2px solid #ffffff30;cursor:pointer;padding:0}
-.sw.on{outline:2px solid #fff;outline-offset:2px}
-.sw:focus-visible,.pill:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.pills{display:flex;flex-wrap:wrap;gap:6px}
-.pill{border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600}
-.pill.on{border-color:var(--pink);background:#FF2E881F}
-.looks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.look{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:8px;cursor:pointer;font-size:12px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:6px}
-.look i{display:flex;width:100%;height:18px;border-radius:6px;overflow:hidden}.look i span{flex:1}
-.athcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.athcard{background:var(--panel2);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px}
-.athcard b{font-size:14px}
-.photo-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--blue);cursor:pointer}
-.photo-btn input{position:absolute;width:1px;height:1px;opacity:0}
-.ofactions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.ofnote{font-size:12px;color:var(--muted);margin:10px 0 0}
-@media(max-width:640px){
-  .stage{min-height:480px;padding:50px 6px 26px}
-  .stage .hint{display:none}
-  .ath svg{height:300px}
-  .looks{grid-template-columns:repeat(2,minmax(0,1fr))}
-  nav button{font-size:10px}
-  .ofbar label.f{min-width:0;flex-basis:100%}
-}
-
 /* ================= MOBILE (≤ 640 px) : version épurée ================= */
 @media(max-width:640px){
   :root{--tabh:62px}
   header{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
   .bar{gap:10px;padding-block:10px}
   .login{margin-left:auto;padding:7px 12px;font-size:14px}
-  nav{position:fixed;left:0;right:0;bottom:0;z-index:1100;margin:0;display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:1100;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;
       background:rgba(11,11,18,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);
       padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));overflow:visible}
   nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;font-size:11px;position:relative}
@@ -308,7 +247,6 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
       <button data-v="explore" class="on"><span class="ni">🧭</span><span class="nl">Explorer</span></button>
       <button data-v="package"><span class="ni">🎒</span><span class="nl">Mon package</span></button>
       <button data-v="races"><span class="ni">🏁</span><span class="nl">Mes courses</span></button>
-      <button data-v="outfit"><span class="ni">👕</span><span class="nl">Outfit</span></button>
       <button data-v="premium"><span class="ni">⚡</span><span class="nl">Prépa J‑7</span><span class="pro">PRO</span></button>
     </nav>
     <button class="login" id="loginBtn">Se connecter</button>
@@ -392,18 +330,6 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
   </section>
 
   <!-- PREMIUM -->
-  <section class="view" id="v-outfit">
-    <div class="hero"><h1>Ton <span>outfit</span> de course</h1><p>Choisis ta course et ton format, compose ta tenue et projette-toi sur la ligne de départ.</p></div>
-    <div class="ofbar">
-      <label class="f">Course<select id="ofRace"></select></label>
-      <div class="f">Format<div class="seg ofseg" id="ofFormat"></div></div>
-    </div>
-    <div class="outfit">
-      <div class="stage" id="ofStage"></div>
-      <div class="card ofpanel" id="ofPanel"></div>
-    </div>
-  </section>
-
   <section class="view" id="v-premium">
     <div class="prem-hero">
       <h1 style="margin:0 0 6px">Prépa <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">J‑7 → Jour J</span></h1>
@@ -546,7 +472,7 @@ $("#nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;go(b.datas
 function go(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
   document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   if(v==="explore")setTimeout(()=>map.invalidateSize(),50);
-  if(v==="package")renderPackage(); if(v==="races")renderRaces(); if(v==="premium")renderPremium(); if(v==="outfit")renderOutfit();
+  if(v==="package")renderPackage(); if(v==="races")renderRaces(); if(v==="premium")renderPremium();
   window.scrollTo({top:0,behavior:"smooth"})}
 
 /* ======================= EVENTS ======================= */
@@ -778,7 +704,7 @@ $("#book").onclick=()=>toast("✅ Démo : en production, redirection vers le pai
 $("#loginBtn").onclick=()=>{
   if(S.user){S.user=null;S.premium=false;$("#loginBtn").textContent="Se connecter";toast("Déconnecté")}
   else{S.user={name:"Noémie",home:"CDG",races:["par26","lyo27","hkwc27"],division:"Open"};$("#loginBtn").textContent="👋 "+S.user.name;toast("Connecté (compte de démo)")}
-  const v=document.querySelector("#nav .on").dataset.v;if(v==="races")renderRaces();if(v==="premium")renderPremium();if(v==="outfit")renderOutfit();
+  const v=document.querySelector("#nav .on").dataset.v;if(v==="races")renderRaces();if(v==="premium")renderPremium();
 };
 
 /* ======================= MES COURSES ======================= */
@@ -794,7 +720,7 @@ function renderRaces(){
       <div class="bud">${seg.map(s=>`<div style="flex:${s[1]};background:${s[2]}"></div>`).join("")}</div>
       <div class="legend">${seg.map(s=>`<span><i style="background:${s[2]}"></i>${s[0]} ${eur(s[1])}</span>`).join("")}</div>
       <div class="saving">💰 Mets de côté <b>${eur(b.total/months)}/mois</b> pendant ${months} mois</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px"><button class="btn sm" onclick="selectEvent('${id}');go('package')">Planifier le voyage</button><button class="btn sm ghost" onclick="selectEvent('${id}');go('explore')">Voir la carte</button><button class="btn sm ghost" onclick="S.of.race='${id}';go('outfit')">👕 Outfit</button><a class="btn sm ghost" style="text-decoration:none" href="${ev.url}" target="_blank" rel="noopener">Billets ↗</a></div></div>`});
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px"><button class="btn sm" onclick="selectEvent('${id}');go('package')">Planifier le voyage</button><button class="btn sm ghost" onclick="selectEvent('${id}');go('explore')">Voir la carte</button><a class="btn sm ghost" style="text-decoration:none" href="${ev.url}" target="_blank" rel="noopener">Billets ↗</a></div></div>`});
   const sum=S.user.races.reduce((s,id)=>s+computeBudget(EVENTS.find(e=>e.id===id),{dep:S.user.home}).total,0);
   $("#racesBody").innerHTML=`<div class="card" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
     <div><small style="color:var(--muted)">Budget saison (départ ${S.user.home})</small><div class="price" style="text-align:left;font-size:28px">${eur(sum)}</div></div>
@@ -830,148 +756,6 @@ function renderPremium(){
   document.querySelectorAll(".day").forEach(d=>d.onclick=()=>{S.day=+d.dataset.d;renderPremium()});
   $("#remind").onclick=async()=>{if("Notification"in window){let r="denied";try{r=await Notification.requestPermission()}catch(e){}if(r==="granted"){new Notification("8Stations · Prépa",{body:"💧 Pense à boire un grand verre d'eau !"});return toast("🔔 Rappels activés")}}toast("🔔 Rappels activés (en app mobile : notifications push)")};
 }
-
-/* ======================= OUTFIT ======================= */
-const OF_COLORS=[["Noir","#141418"],["Blanc","#EDEDF2"],["Rose","#FF2E88"],["Violet","#8B5CFF"],["Bleu","#2EC5FF"],["Lime","#B8FF3D"],["Corail","#FF6B4A"],["Marine","#1F2B5C"],["Kaki","#5E6B3C"],["Gris","#70707F"]];
-const OF_SKINS=["#F1C9A5","#E0A982","#C68B5E","#8D5A3B","#5C3A24"];
-const OF_HAIRS=[["Noir","#1A1410"],["Brun","#3B2416"],["Châtain","#6B4226"],["Blond foncé","#9C7444"],["Blond","#D2B07A"],["Roux","#8A3B1E"]];
-const OF_DEF=i=>({skin:OF_SKINS[i?3:1],hair:OF_HAIRS[i?0:1][1],photo:null,morph:{height:i?0.2:0,muscle:i?0.6:0.4,weight:i?-0.1:-0.2}});
-const OF_LOOKS=[{n:"Électrique",top:"#FF2E88",bottom:"#141418"},{n:"Océan",top:"#2EC5FF",bottom:"#1F2B5C"},{n:"Acid",top:"#B8FF3D",bottom:"#141418"},{n:"Nuit",top:"#8B5CFF",bottom:"#FF2E88"}];
-const F_TOPS={brassiere:"Brassière",crop:"Crop top",debardeur:"Débardeur"}, F_BOTTOMS={cycliste:"Cycliste",legging:"Legging 7/8",short:"Short"};
-const M_TOPS={debardeur:"Débardeur",tshirt:"T‑shirt",none:"Sans haut"};
-const FORMATS={solo:"Solo",duoF:"Duo femmes",duoH:"Duo hommes",mixte:"Duo mixte"};
-S.of={race:null,format:"solo",soloSex:"F",duoMode:"same",menMatch:"bottom",fTop:"brassiere",fBottom:"cycliste",mTop:"debardeur",top:"#FF2E88",bottom:"#141418",
-  ath:[OF_DEF(0),OF_DEF(1)]};
-const OF_KEY="8stations-outfits";
-const ofSaved=()=>{try{return JSON.parse(localStorage.getItem(OF_KEY)||"{}")}catch(e){return{}}};
-function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.max(0,Math.min(255,Math.round(v+amt)));return"#"+[f(r),f(g),f(b)].map(v=>v.toString(16).padStart(2,"0")).join("")}
-let ofUid=0;
-function avatar(sex,a,top,bottom){
-  const id="av"+(++ofUid),F=sex==="F",mir='transform="translate(200,0) scale(-1,1)"',sk=a.skin,skD=shade(sk,-28),stroke='stroke="#00000033" stroke-width="1"';
-  const torso=F?"M66 92 Q100 82 134 92 Q140 96 138 106 Q131 150 123 196 Q131 214 131 238 L69 238 Q69 214 77 196 Q69 150 62 106 Q60 96 66 92 Z"
-               :"M58 94 Q100 84 142 94 Q150 99 147 112 Q138 150 128 200 Q132 218 130 240 L70 240 Q68 218 72 200 Q62 150 53 112 Q50 99 58 94 Z";
-  const arm=F?"M64 96 Q52 100 50 118 L45 170 L42 222 Q44 232 52 228 L56 176 L62 128 Q66 112 70 104 Z":"M56 98 Q42 104 40 124 L36 176 L34 226 Q37 236 45 231 L48 180 L54 132 Q58 116 64 106 Z";
-  const leg=F?"M70 232 L100 232 L99 300 L95 340 L93 408 L80 408 L78 340 L74 300 Z":"M70 234 L100 234 L99 300 L96 340 L94 408 L80 408 L77 340 L73 300 Z";
-  const shoe="M76 404 L96 404 L99 418 Q86 425 71 420 Z";
-  const TOPS={brassiere:`<path d="M80 92 L76 104 M120 92 L124 104" stroke="${top.c}" stroke-width="5" stroke-linecap="round"/><path d="M64 102 Q100 92 136 102 L132 150 Q100 160 68 150 Z" fill="${top.c}" ${stroke}/>`,
-    crop:`<path d="M64 94 Q100 86 136 94 L140 114 L132 117 L130 162 Q100 168 70 162 L68 117 L60 114 Z" fill="${top.c}" ${stroke}/>`,
-    fdeb:`<path d="M70 94 Q84 92 86 100 Q100 110 114 100 Q116 92 130 94 L136 106 Q131 150 124 200 L76 200 Q69 150 64 106 Z" fill="${top.c}" ${stroke}/>`,
-    mdeb:`<path d="M66 96 Q80 92 84 100 Q100 112 116 100 Q120 92 134 96 L146 112 Q138 150 129 204 L71 204 Q62 150 54 112 Z" fill="${top.c}" ${stroke}/>`,
-    tshirt:`<path d="M58 94 Q100 84 142 94 L156 128 L142 134 L138 118 Q136 160 130 206 L70 206 Q64 160 62 118 L58 134 L44 128 Z" fill="${top.c}" ${stroke}/>`,none:""};
-  const BOTS={cycliste:"M76 194 L124 194 Q131 214 131 238 L127 296 L101 296 L100 252 L99 296 L73 296 L69 238 Q69 214 76 194 Z",
-    legging:"M76 194 L124 194 Q131 214 131 238 L126 300 L121 340 L120 382 L102 382 L101 300 L100 256 L99 300 L98 382 L80 382 L79 340 L74 300 L69 238 Q69 214 76 194 Z",
-    short:"M76 194 L124 194 Q132 214 134 240 L136 268 L104 268 L100 248 L96 268 L64 268 L66 240 Q68 214 76 194 Z",
-    mshort:"M70 198 L130 198 Q134 218 135 242 L138 292 L104 292 L100 256 L96 292 L62 292 L65 242 Q66 218 70 198 Z"};
-  const topKey=F?(top.t==="debardeur"?"fdeb":top.t):(top.t==="debardeur"?"mdeb":top.t);
-  const bot=BOTS[F?bottom.t:"mshort"],wy=F?196:200;
-  const hairC="#2B1E16";
-  const hairBack=F?`<path d="M118 28 Q142 40 138 96 Q130 72 118 52 Z" fill="${hairC}"/>`:"";
-  const hairFront=F?`<path d="M77 44 Q76 17 100 17 Q124 17 123 44 Q116 30 100 29 Q84 30 77 44 Z" fill="${hairC}"/>`:`<path d="M78 40 Q77 16 100 16 Q123 16 122 40 Q116 27 100 26 Q84 27 78 40 Z" fill="${hairC}"/>`;
-  const face=a.photo?`<clipPath id="${id}c"><ellipse cx="100" cy="46" rx="22" ry="27"/></clipPath><image href="${a.photo}" x="76" y="17" width="48" height="58" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id}c)"/><ellipse cx="100" cy="46" rx="22" ry="27" fill="none" stroke="#ffffff55" stroke-width="1.5"/>`
-    :`${hairBack}<ellipse cx="100" cy="46" rx="22" ry="27" fill="${sk}"/>${hairFront}`;
-  return `<svg viewBox="0 0 200 430" role="img" aria-label="Avatar ${F?"femme":"homme"} : haut ${top.t==="none"?"aucun":top.t}, bas ${F?bottom.t:"short"}">
-    <ellipse cx="100" cy="422" rx="52" ry="7" fill="#00000066"/>
-    <path d="${arm}" fill="${skD}"/><path d="${arm}" fill="${skD}" ${mir}/>
-    <path d="M91 66 L109 66 L111 90 L89 90 Z" fill="${skD}"/>
-    <path d="${torso}" fill="${sk}"/>
-    <path d="${leg}" fill="${sk}"/><path d="${leg}" fill="${sk}" ${mir}/>
-    <path d="${shoe}" fill="#F4F4F8"/><path d="${shoe}" fill="#F4F4F8" ${mir}/><path d="M74 414 L98 414" stroke="${top.c==="#EDEDF2"?bottom.c:top.c}" stroke-width="3" stroke-linecap="round"/><path d="M74 414 L98 414" stroke="${top.c==="#EDEDF2"?bottom.c:top.c}" stroke-width="3" stroke-linecap="round" ${mir}/>
-    <path d="${bot}" fill="${bottom.c}" ${stroke}/>
-    <path d="M${F?76:70} ${wy+3} L${F?124:130} ${wy+3}" stroke="${shade(bottom.c,bottom.c==="#141418"?60:-45)}" stroke-width="4"/>
-    ${TOPS[topKey]||""}
-    ${face}
-  </svg>`;
-}
-function ofCast(){ // liste des athlètes à afficher selon le format
-  const o=S.of,T={c:o.top},B={c:o.bottom},sw=o.duoMode==="swap";
-  const fem=(i,inv)=>({sex:"F",a:o.ath[i],top:{t:o.fTop,c:inv?o.bottom:o.top},bottom:{t:o.fBottom,c:inv?o.top:o.bottom}});
-  const man=(i,inv)=>({sex:"H",a:o.ath[i],top:{t:o.mTop,c:inv?o.bottom:o.top},bottom:{t:"short",c:inv?o.top:o.bottom}});
-  if(o.format==="solo")return[o.soloSex==="F"?fem(0):man(0)];
-  if(o.format==="duoF")return[fem(0),fem(1,sw)];
-  if(o.format==="duoH")return[man(0),man(1,sw)];
-  return[fem(0),{sex:"H",a:o.ath[1],top:{t:o.mTop,c:o.top},bottom:{t:"short",c:o.menMatch==="bottom"?o.bottom:o.top}}];
-}
-function renderOutfit(){
-  const o=S.of,list=S.user?S.user.races.map(id=>EVENTS.find(e=>e.id===id)).filter(Boolean):upcoming();
-  if(!o.race||!list.find(e=>e.id===o.race))o.race=(list.find(e=>e.id===S.ev.id)||list[0]).id;
-  if(S.ofLoaded!==o.race){S.ofLoaded=o.race;const sv=ofSaved()[o.race];if(sv){Object.assign(o,sv,{race:o.race});o.ath=[0,1].map(i=>({...OF_DEF(i),...(sv.ath&&sv.ath[i]||{}),morph:{...OF_DEF(i).morph,...(sv.ath&&sv.ath[i]&&sv.ath[i].morph||{})}}))}}
-  const ev=EVENTS.find(e=>e.id===o.race);
-  $("#ofRace").innerHTML=list.map(e=>`<option value="${e.id}" ${e.id===o.race?"selected":""}>${e.flag} ${e.city} · ${fmtRange(e)}</option>`).join("");
-  $("#ofFormat").innerHTML=Object.entries(FORMATS).map(([k,l])=>`<button type="button" data-fmt="${k}" class="${o.format===k?"on":""}"><b>${l}</b><small>${k==="solo"?"1 athlète":k==="mixte"?"1 femme + 1 homme":"2 athlètes"}</small></button>`).join("");
-  const cast=ofCast(),hasF=cast.some(c=>c.sex==="F"),hasH=cast.some(c=>c.sex==="H");
-  const lbl=(c,i)=>cast.length===1?(c.sex==="F"?"Toi · femme":"Toi · homme"):`Athlète ${i+1} · ${c.sex==="F"?"femme":"homme"}`;
-  renderStage();
-  const sw=(k,v)=>OF_COLORS.map(([n,c])=>`<button type="button" class="sw ${v===c?"on":""}" style="background:${c}" data-col="${k}" data-v="${c}" aria-label="${n}" title="${n}"></button>`).join("");
-  const pills=(k,map,v)=>Object.entries(map).map(([id,l])=>`<button type="button" class="pill ${v===id?"on":""}" data-pk="${k}" data-v="${id}">${l}</button>`).join("");
-  const saved=ofSaved()[o.race];
-  $("#ofPanel").innerHTML=`
-    ${o.format==="solo"?`<h4>Je cours en</h4><div class="pills">${pills("soloSex",{F:"Femme",H:"Homme"},o.soloSex)}</div>`:""}
-    ${o.format==="duoF"||o.format==="duoH"?`<h4>Tenues du duo</h4><div class="pills">${pills("duoMode",{same:"Identiques",swap:"Couleurs inversées (haut ↔ bas)"},o.duoMode)}</div>`:""}
-    ${o.format==="mixte"?`<h4>Short de l'homme assorti au</h4><div class="pills">${pills("menMatch",{bottom:"Bas de la femme",top:"Haut de la femme"},o.menMatch)}</div>`:""}
-    <h4>Looks prêts à porter</h4>
-    <div class="looks">${OF_LOOKS.map((l,i)=>`<button type="button" class="look" data-look="${i}"><i><span style="background:${l.top}"></span><span style="background:${l.bottom}"></span></i>${l.n}</button>`).join("")}</div>
-    ${hasF?`<h4>Haut (femme)</h4><div class="pills">${pills("fTop",F_TOPS,o.fTop)}</div><h4>Bas (femme)</h4><div class="pills">${pills("fBottom",F_BOTTOMS,o.fBottom)}</div>`:""}
-    ${hasH?`<h4>Haut (homme)</h4><div class="pills">${pills("mTop",M_TOPS,o.mTop)}</div>`:""}
-    <h4>Couleur du haut</h4><div class="sws">${sw("top",o.top)}</div>
-    <h4>Couleur du bas${o.format==="mixte"?" (et short homme si assorti au bas)":""}</h4><div class="sws">${sw("bottom",o.bottom)}</div>
-    <h4>Avatars</h4>
-    <div class="athcards">${cast.map((c,i)=>`<div class="athcard"><b>${lbl(c,i)}</b>
-      <label class="photo-btn">📷 ${c.a.photo?"Changer la photo":"Ajouter ma photo"}<input type="file" accept="image/*" data-photo="${o.ath.indexOf(c.a)}"></label>
-      ${c.a.photo?`<button type="button" class="pill" data-rmphoto="${o.ath.indexOf(c.a)}">Retirer la photo</button>`:""}
-      <span class="mini">Peau</span><div class="sws">${OF_SKINS.map(t=>`<button type="button" class="sw ${c.a.skin===t?"on":""}" style="background:${t}" data-skin="${o.ath.indexOf(c.a)}" data-v="${t}" aria-label="Teinte de peau"></button>`).join("")}</div>
-      <span class="mini">Cheveux</span><div class="sws">${OF_HAIRS.map(([n,h])=>`<button type="button" class="sw ${c.a.hair===h?"on":""}" style="background:${h}" data-hair="${o.ath.indexOf(c.a)}" data-v="${h}" aria-label="Cheveux ${n}" title="${n}"></button>`).join("")}</div>
-      ${[["height","Taille","Petite","Grande"],["muscle","Muscles","Fins","Très musclés"],["weight","Silhouette","Fine","Robuste"]].map(([k,l,a0,a1])=>`<label class="morph"><span>${l}</span><input type="range" id="m-${o.ath.indexOf(c.a)}-${k}" min="-1" max="1" step="0.05" value="${c.a.morph[k]}" data-morph="${o.ath.indexOf(c.a)}" data-mk="${k}" aria-label="${l} : de ${a0} à ${a1}"></label>`).join("")}
-      </div>`).join("")}</div>
-    <p class="ofnote">Ta photo reste sur ton appareil : elle n'est envoyée nulle part. Elle s'affiche en médaillon sous ton avatar.</p>
-    <div class="ofactions"><button type="button" class="btn" id="ofSave">${saved?"Mettre à jour l'outfit":"Enregistrer pour cette course"}</button>
-      ${saved?`<span class="ofnote" style="margin:0;align-self:center">✓ Outfit enregistré pour ${ev.city}</span>`:""}</div>`;
-}
-/* --- scène : avatars 3D (three.js + MakeHuman), repli sur les avatars dessinés --- */
-let of3D=null,ofTimer=0;
-function load3D(){
-  if(of3D)return of3D;
-  const add=src=>new Promise((res,rej)=>{const sc=document.createElement("script");sc.src=src;sc.onload=res;sc.onerror=rej;document.head.appendChild(sc)});
-  of3D=(window.THREE?Promise.resolve():add("https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js")).then(()=>window.Avatar3D?null:add("assets/avatar3d.js"));
-  of3D.catch(()=>{of3D=null});
-  return of3D;
-}
-function renderStage(){
-  const o=S.of,ev=EVENTS.find(e=>e.id===o.race),cast=ofCast(),st=$("#ofStage");
-  const lbl=(c,i)=>cast.length===1?(c.sex==="F"?"Toi · femme":"Toi · homme"):`Athlète ${i+1} · ${c.sex==="F"?"femme":"homme"}`;
-  if(!st.querySelector(".of3d"))st.innerHTML=`<div class="tag"></div><div class="of3d" id="of3d"></div><div class="athl"></div>
-    <div class="views" role="group" aria-label="Angle de vue"><button type="button" data-view="0">Face</button><button type="button" data-view="${-Math.PI/2}">Profil</button><button type="button" data-view="${Math.PI}">Dos</button></div>
-    <div class="hint">↔ Fais glisser pour tourner</div><div class="ofload">Chargement des avatars 3D…</div>`;
-  st.querySelector(".tag").innerHTML=`<span><b>${ev.flag} ${ev.city}</b> · ${fmtRange(ev)}</span><span>${FORMATS[o.format]}</span>`;
-  st.querySelector(".athl").innerHTML=cast.map((c,i)=>`<span>${c.a.photo?`<img src="${c.a.photo}" alt="">`:""}${lbl(c,i)}</span>`).join("");
-  const cfgs=cast.map(c=>({sex:c.sex,skin:c.a.skin,hair:c.a.hair,morph:c.a.morph,top:{t:c.top.t,c:c.top.c},bottom:{t:c.sex==="F"?c.bottom.t:"short",c:c.bottom.c}}));
-  const box=$("#of3d");
-  load3D().then(()=>Avatar3D.show(box,cfgs)).then(()=>{st.classList.add("ready");st.classList.remove("flat")})
-    .catch(()=>{st.classList.add("ready","flat");box.innerHTML=`<div class="flatcast">${cast.map(c=>`<div class="ath">${avatar(c.sex,c.a,c.top,c.bottom)}</div>`).join("")}</div>`});
-}
-$("#v-outfit").addEventListener("input",e=>{const r=e.target.closest("input[data-morph]");if(!r)return;
-  S.of.ath[+r.dataset.morph].morph[r.dataset.mk]=+r.value;clearTimeout(ofTimer);ofTimer=setTimeout(renderStage,120)});
-$("#ofRace").onchange=e=>{S.of.race=e.target.value;renderOutfit()};
-$("#v-outfit").addEventListener("click",e=>{
-  const o=S.of,t=e.target.closest("button");if(!t)return;
-  if(t.dataset.fmt){o.format=t.dataset.fmt}
-  else if(t.dataset.pk){o[t.dataset.pk]=t.dataset.v}
-  else if(t.dataset.col){o[t.dataset.col]=t.dataset.v}
-  else if(t.dataset.look){const l=OF_LOOKS[+t.dataset.look];o.top=l.top;o.bottom=l.bottom}
-  else if(t.dataset.skin){o.ath[+t.dataset.skin].skin=t.dataset.v}
-  else if(t.dataset.hair){o.ath[+t.dataset.hair].hair=t.dataset.v}
-  else if(t.dataset.view!==undefined){if(window.Avatar3D)Avatar3D.setRotation(+t.dataset.view);return}
-  else if(t.dataset.rmphoto){o.ath[+t.dataset.rmphoto].photo=null}
-  else if(t.id==="ofSave"){const all=ofSaved(),{race,...rest}=o;all[race]=JSON.parse(JSON.stringify(rest));
-    try{localStorage.setItem(OF_KEY,JSON.stringify(all));toast("👕 Outfit enregistré pour "+EVENTS.find(x=>x.id===race).city)}catch(err){toast("Impossible d'enregistrer sur cet appareil (stockage plein ou bloqué).")}}
-  else return;
-  renderOutfit();
-});
-$("#v-outfit").addEventListener("change",e=>{const inp=e.target.closest("input[data-photo]");if(!inp||!inp.files[0])return;
-  const i=+inp.dataset.photo,file=inp.files[0],img=new Image(),url=URL.createObjectURL(file);
-  img.onload=()=>{const c=document.createElement("canvas"),k=Math.min(1,320/Math.max(img.width,img.height));c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
-    c.getContext("2d").drawImage(img,0,0,c.width,c.height);S.of.ath[i].photo=c.toDataURL("image/jpeg",.85);URL.revokeObjectURL(url);renderOutfit();toast("📷 Photo ajoutée : cadre ton visage au centre pour un meilleur rendu")};
-  img.onerror=()=>{URL.revokeObjectURL(url);toast("Cette image n'a pas pu être lue. Essaie une photo JPG ou PNG.")};
-  img.src=url});
 
 /* INIT */
 selectEvent("par26");
