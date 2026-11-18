@@ -10,7 +10,7 @@ Ouvre `index.html` dans un navigateur (aucune installation). Calendrier : offici
 
 ## Écrans
 - **Explorer** : choix de la course, carte (hôtels / salles / excursions) avec rayon réglable ≤ 5 km, liste triée au meilleur prix.
-- **Mon package** : vol/train + hôtel + excursions présélectionnés au meilleur prix ; aéroport de départ, dates, voyageurs, bagages modifiables.
+- **Mon package** : vol/train + hôtel + location de voiture (optionnelle) + excursions présélectionnés au meilleur prix ; aéroport de départ, dates, voyageurs, bagages, catégorie de voiture, prise en charge (aéroport / près du site) et options modifiables.
 - **Mes courses** (connexion démo) : courses à venir, compte à rebours, budget estimé et épargne mensuelle conseillée.
 - **Prépa J-7 (Premium)** : plan jour par jour entraînement / hydratation / nutrition / sommeil + rappels.
 
@@ -19,6 +19,7 @@ Ouvre `index.html` dans un navigateur (aucune installation). Calendrier : offici
 |---|---|
 | Hôtels | Booking.com Demand API / Expedia Rapid (statut partenaire requis) ; au départ : liens affiliés |
 | Vols | Duffel (réservation réelle) ; au départ : Skyscanner / Kiwi en affiliation |
+| Location de voiture | Rentalcars.com (affiliation Booking) / Discover Cars ; API : CarTrawler (partenaire) |
 | Excursions | GetYourGuide Partner API (sur candidature) ou widget affilié GetYourGuide |
 | Salles de sport | OpenStreetMap Overpass (`leisure=fitness_centre`, gratuit) ou Google Places |
 | Carte | Leaflet + OSM/CARTO, ou Mapbox |

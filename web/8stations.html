@@ -769,6 +769,17 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
 .flight .t b{font-family:Archivo}
 .flight .t small{color:var(--muted);display:block}
 .summary{position:sticky;top:80px}
+.carbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;background:var(--panel2);border-radius:12px;margin-bottom:8px;flex-wrap:wrap}
+.carbar small{color:var(--muted);display:block}
+.switch{position:relative;width:46px;height:26px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:.2s}
+.switch.on{background:var(--grad);border-color:transparent}.switch.on::after{left:23px;background:#fff}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.seg button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 10px;cursor:pointer;text-align:left;font-size:13px}
+.seg button b{display:block;font-size:14px}.seg button small{color:var(--muted)}
+.seg button.on{border-color:var(--blue);background:#2EC5FF1A}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.carnote{font-size:12px;color:var(--muted);margin:2px 0 10px}
 .sumline{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
 .sumline span:first-child{color:var(--muted)}
 .total{display:flex;justify-content:space-between;align-items:end;margin:14px 0}
@@ -891,6 +902,8 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
         <div id="flights"></div>
         <div class="sec">🏨 Hôtel (≤ 5 km du site)</div>
         <div id="pkgHotels"></div>
+        <div class="sec">🚗 Location de voiture</div>
+        <div id="pkgCar"></div>
         <div class="sec">🎟 Excursions ajoutées</div>
         <div id="pkgTours"></div>
       </div>
@@ -1040,6 +1053,7 @@ const PLACES=Object.fromEntries(EVENTS.map(e=>[e.id,genPlaces(e)]));
 /* ======================= ÉTAT ======================= */
 const S={ev:EVENTS[0],radius:5,layers:{hotels:true,gyms:true,tours:true},listTab:"hotels",
   dep:"CDG",pax:1,bags:0,sort:"price",dIn:null,dOut:null,hotel:null,flight:null,tours:new Set(),
+  car:{on:false,cat:null,pick:"airport",offer:null,opts:new Set()},
   user:null,premium:false,day:7};
 
 const $=s=>document.querySelector(s), eur=n=>Math.round(n).toLocaleString("fr-FR")+" €";
@@ -1081,7 +1095,7 @@ function renderEvents(){
 $("#evFilters").onclick=e=>{const b=e.target.closest("[data-reg]");if(!b)return;S.filter.region=b.dataset.reg;renderEvents()};
 $("#events").onclick=e=>{const b=e.target.closest(".ev");if(!b)return;selectEvent(b.dataset.id)};
 function selectEvent(id){
-  S.ev=EVENTS.find(e=>e.id===id);S.dIn=addDays(S.ev.date,-1);S.dOut=addDays(S.ev.date,1);S.hotel=null;S.flight=null;S.tours=new Set();
+  S.ev=EVENTS.find(e=>e.id===id);S.dIn=addDays(S.ev.date,-1);S.dOut=addDays(S.ev.date,1);S.hotel=null;S.flight=null;S.tours=new Set();S.car.offer=null;
   renderEvents();renderMap();renderList();
 }
 
@@ -1092,7 +1106,7 @@ const map=L.map("map",{zoomControl:true}).setView([48.83,2.29],13);
    Satellite : Esri World Imagery. En production : MapTiler / Mapbox avec clé. */
 const ESRI="https://server.arcgisonline.com/ArcGIS/rest/services/",ATT="Tiles &copy; Esri — Esri, HERE, Garmin, OpenStreetMap contributors";
 const OFM_ATT='<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; OpenStreetMap';
-const GL=(()=>{try{return !!(L.maplibreGL&&window.maplibregl&&maplibregl.supported?maplibregl.supported():document.createElement("canvas").getContext("webgl"))}catch(e){return false}})();
+const GL=(()=>{try{if(!L.maplibreGL||!window.maplibregl)return false;return !!(maplibregl.supported?maplibregl.supported():document.createElement("canvas").getContext("webgl"))}catch(e){return false}})();
 function baseLayers(m){
   if(window.WORLD_GEO){ /* version web hébergée : pas de tuiles externes, pays dessinés depuis les données intégrées */
     m.getContainer().classList.add("offline");
@@ -1167,6 +1181,43 @@ function flightsFor(){
     return{id:"f"+i,carrier:c,type:"✈️",dur,stops:r()>.75?1:0,price:Math.round((35+d*.08)*(.75+r()*.9)*2),bagPrice:low?40:30,bagIncl:i===3,
       out:`${String(6+Math.floor(r()*14)).padStart(2,"0")}:${["05","20","35","50"][i]}`,note:""}});
 }
+/* ---------- Location de voiture (données de démo) ---------- */
+const CAR_CATS=[
+  {id:"city",name:"Citadine",ex:"Fiat 500 ou similaire",seats:4,bags:1,f:1},
+  {id:"compact",name:"Compacte",ex:"VW Golf ou similaire",seats:5,bags:2,f:1.25},
+  {id:"suv",name:"SUV",ex:"Peugeot 3008 ou similaire",seats:5,bags:3,f:1.7},
+  {id:"van",name:"Monospace 7 pl.",ex:"VW Touran ou similaire",seats:7,bags:4,f:2.1}];
+const CAR_OPTS=[{id:"ins",name:"Assurance sans franchise",day:18},{id:"drv",name:"Conducteur additionnel",day:9},{id:"kid",name:"Siège enfant",day:8}];
+const CAR_BASE={"Europe":32,"Amérique du Nord":45,"Amérique du Sud":30,"Asie-Pacifique":35,"Afrique":28};
+const carDays=()=>Math.max(1,Math.round((new Date(S.dOut)-new Date(S.dIn))/864e5));
+function defaultCat(){return S.pax>5?"van":S.pax>2||S.bags>1?"compact":"city"}
+function carOffers(){
+  const ev=S.ev,c=CAR_CATS.find(x=>x.id===S.car.cat),r=rng(ev.id+c.id+S.car.pick),base=CAR_BASE[ev.region]||32;
+  return ["RentGo","DriveNow","AutoEuro","CityCar"].map((a,i)=>{
+    const day=Math.round(base*c.f*(.8+r()*.55)*(S.car.pick==="airport"?1.08:1));
+    return{id:a,agency:a,day,auto:r()>.4,unlimited:r()>.3,freeCancel:r()>.35,dist:S.car.pick==="airport"?null:(0.4+r()*3).toFixed(1)}
+  }).sort((a,b)=>a.day-b.day);
+}
+function carTotal(){if(!S.car.on||!S.car.offer)return 0;const d=carDays(),o=carOffers().find(x=>x.id===S.car.offer);
+  return o.day*d+[...S.car.opts].reduce((t,id)=>t+CAR_OPTS.find(x=>x.id===id).day*d,0)}
+function renderCar(){
+  const ev=S.ev,d=carDays();
+  let h=`<div class="carbar"><div><b>Ajouter une voiture</b><small>Pratique si le site est excentré, pour les excursions ou pour partir à plusieurs.</small></div>
+    <button class="switch ${S.car.on?"on":""}" id="carToggle" aria-label="Ajouter une location de voiture" aria-pressed="${S.car.on}"></button></div>`;
+  if(S.car.on){
+    if(!S.car.cat||CAR_CATS.find(c=>c.id===S.car.cat).seats<S.pax)S.car.cat=defaultCat();
+    const offers=carOffers();if(!offers.find(o=>o.id===S.car.offer))S.car.offer=offers[0].id;
+    h+=`<div class="seg">${[["airport",`🛫 Aéroport (${ev.iata})`],["city","🏙️ Près du site"]].map(([k,l])=>`<button data-pick="${k}" class="${S.car.pick===k?"on":""}"><b>${l}</b><small>${k==="airport"?"Prise et retour à l'arrivée":"Agence à moins de 5 km"}</small></button>`).join("")}</div>
+    <div class="seg">${CAR_CATS.map(c=>`<button data-cat="${c.id}" class="${S.car.cat===c.id?"on":""}" ${c.seats<S.pax?"disabled":""}><b>${c.name}</b><small>${c.ex} · ${c.seats} pl. · ${c.bags} 🧳</small></button>`).join("")}</div>
+    ${offers.map((o,i)=>`<div class="flight ${o.id===S.car.offer?"sel":""}" data-car="${o.id}">
+      <div style="font-size:22px">🚗</div><div class="t"><b>${o.agency}${i===0?'<span class="badge">MEILLEUR PRIX</span>':""}</b>
+      <small>${o.auto?"Automatique":"Manuelle"} · ${o.unlimited?"km illimités":"300 km/jour"}${o.freeCancel?" · annulation gratuite":""}${o.dist?` · agence à ${o.dist} km du site`:""}</small></div>
+      <div class="price">${eur(o.day*d)}<small>${d} j · ${eur(o.day)}/j</small></div></div>`).join("")}
+    <div class="seg">${CAR_OPTS.map(o=>`<button data-copt="${o.id}" class="${S.car.opts.has(o.id)?"on":""}"><b>${S.car.opts.has(o.id)?"✅":"➕"} ${o.name}</b><small>+${o.day} €/jour</small></button>`).join("")}</div>
+    <p class="carnote">Location du ${fmtDate(S.dIn)} au ${fmtDate(S.dOut)}, alignée sur tes dates de séjour.${ev.region!=="Europe"?" Hors Europe, pense au permis international.":""}</p>`;
+  }
+  $("#pkgCar").innerHTML=h;
+}
 function renderPackage(){
   const ev=S.ev;$("#pkgTitle").innerHTML=`Package <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">${ev.city}</span>`;
   $("#dep").value=S.dep;$("#dIn").value=S.dIn;$("#dOut").value=S.dOut;$("#pax").textContent=S.pax;$("#bags").textContent=S.bags;$("#sort").value=S.sort;
@@ -1187,6 +1238,7 @@ function renderPackage(){
   $("#pkgTours").innerHTML=ts.map(t=>`<div class="flight ${S.tours.has(t.id)?"sel":""}" data-t="${t.id}">
     <div style="font-size:22px">${S.tours.has(t.id)?"✅":"➕"}</div><div class="t"><b>${t.name}</b><small>⭐ ${t.rating} · ${t.dur} · ${t.dist.toFixed(1)} km</small></div>
     <div class="price">${eur(t.price)}<small>/ pers.</small></div></div>`).join("");
+  renderCar();
   renderSummary();
 }
 function computeBudget(ev,opts={}){ // utilisé par le package et "Mes courses"
@@ -1201,15 +1253,22 @@ function renderSummary(){
   const tr=f.price*S.pax,bag=f.bagIncl?0:(f.bagPrice||0)*S.bags,ho=S.hotel.price*n*rooms;
   const tours=[...S.tours].map(id=>PLACES[S.ev.id].tours.find(t=>t.id===id));const to=tours.reduce((s,t)=>s+t.price,0)*S.pax;
   const lines=[[`${f.type} ${f.carrier} × ${S.pax}`,tr],...(bag?[[`🧳 Bagages × ${S.bags}`,bag]]:[]),[`🏨 ${S.hotel.name} · ${n} nuit${n>1?"s":""} · ${rooms} ch.`,ho],...tours.map(t=>[`🎟 ${t.name}`,t.price*S.pax])];
+  const car=carTotal();
+  if(car){const c=CAR_CATS.find(x=>x.id===S.car.cat),d=carDays();lines.push([`🚗 ${S.car.offer} · ${c.name} · ${d} j${S.car.opts.size?" + options":""}`,car])}
   $("#sum").innerHTML=`<div class="sumline"><span>Course</span><span>${S.ev.city} · ${fmtDate(S.ev.date)}</span></div>
     <div class="sumline"><span>Dates</span><span>${fmtDate(S.dIn)} → ${fmtDate(S.dOut)}</span></div>`+lines.map(l=>`<div class="sumline"><span>${l[0]}</span><span>${eur(l[1])}</span></div>`).join("");
-  $("#total").textContent=eur(tr+bag+ho+to);
+  $("#total").textContent=eur(tr+bag+ho+to+car);
 }
 $("#v-package").addEventListener("click",e=>{
   const s=e.target.closest("[data-s]");if(s){const k=s.dataset.s;S[k]=Math.max(k==="pax"?1:0,Math.min(9,S[k]+ +s.dataset.d));return renderPackage()}
   const f=e.target.closest("[data-f]");if(f){S.flight=f.dataset.f;return renderPackage()}
   const h=e.target.closest("[data-h]");if(h){S.hotel=PLACES[S.ev.id].hotels.find(x=>x.id===h.dataset.h);return renderPackage()}
   const t=e.target.closest("[data-t]");if(t){S.tours.has(t.dataset.t)?S.tours.delete(t.dataset.t):S.tours.add(t.dataset.t);return renderPackage()}
+  if(e.target.closest("#carToggle")){S.car.on=!S.car.on;return renderPackage()}
+  const pk=e.target.closest("[data-pick]");if(pk){S.car.pick=pk.dataset.pick;S.car.offer=null;return renderPackage()}
+  const ct=e.target.closest("[data-cat]");if(ct&&!ct.disabled){S.car.cat=ct.dataset.cat;S.car.offer=null;return renderPackage()}
+  const co=e.target.closest("[data-car]");if(co){S.car.offer=co.dataset.car;return renderPackage()}
+  const op=e.target.closest("[data-copt]");if(op){const id=op.dataset.copt;S.car.opts.has(id)?S.car.opts.delete(id):S.car.opts.add(id);return renderPackage()}
 });
 $("#dep").onchange=e=>{S.dep=e.target.value;S.flight=null;renderPackage()};
 $("#sort").onchange=e=>{S.sort=e.target.value;renderPackage()};
