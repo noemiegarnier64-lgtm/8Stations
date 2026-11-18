@@ -844,6 +844,21 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
 .stage .tag{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);z-index:1}
 .stage .tag b{color:var(--text);font-family:Archivo}
 .stage .start{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:Archivo;font-weight:900;letter-spacing:.4em;font-size:13px;color:#ffffff40;z-index:1}
+.of3d{position:absolute;inset:36px 0 0 0;z-index:2}
+.stage{min-height:600px}
+.stage .ofload{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px;z-index:1}
+.stage.ready .ofload{display:none}
+.stage .athl{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:space-around;z-index:3;pointer-events:none}
+.stage .athl span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);background:#0B0B12cc;padding:3px 10px 3px 4px;border-radius:999px}
+.stage .athl img{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.stage .views{position:absolute;top:44px;right:12px;display:flex;gap:4px;z-index:3}
+.stage .views button{border:1px solid var(--line);background:#0B0B12cc;border-radius:8px;padding:4px 8px;font-size:12px;cursor:pointer;color:var(--text)}
+.stage .hint{position:absolute;top:48px;left:16px;font-size:12px;color:var(--muted);z-index:3}
+.stage.flat .views,.stage.flat .hint{display:none}
+.flatcast{position:absolute;inset:56px 12px 30px;display:flex;justify-content:center;align-items:flex-end;gap:4%}
+.athcard .mini{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.morph{display:grid;grid-template-columns:76px 1fr;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.morph input{width:100%;accent-color:var(--pink)}
 .ath{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 1 auto;min-width:0}
 .ath svg{height:420px;width:auto;max-width:100%;filter:drop-shadow(0 12px 18px rgba(0,0,0,.5))}
 .ath small{font-size:12px;color:var(--muted);background:#0B0B12aa;padding:2px 8px;border-radius:999px}
@@ -867,7 +882,8 @@ label.f select,label.f input{background:var(--panel2);border:1px solid var(--lin
 .ofactions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .ofnote{font-size:12px;color:var(--muted);margin:10px 0 0}
 @media(max-width:640px){
-  .stage{min-height:0;padding:50px 6px 26px}
+  .stage{min-height:480px;padding:50px 6px 26px}
+  .stage .hint{display:none}
   .ath svg{height:300px}
   .looks{grid-template-columns:repeat(2,minmax(0,1fr))}
   nav button{font-size:10px}
@@ -1473,13 +1489,15 @@ function renderPremium(){
 
 /* ======================= OUTFIT ======================= */
 const OF_COLORS=[["Noir","#141418"],["Blanc","#EDEDF2"],["Rose","#FF2E88"],["Violet","#8B5CFF"],["Bleu","#2EC5FF"],["Lime","#B8FF3D"],["Corail","#FF6B4A"],["Marine","#1F2B5C"],["Kaki","#5E6B3C"],["Gris","#70707F"]];
-const OF_SKINS=["#F3D2B6","#E3AE88","#C48A5E","#93603D","#5F3B24"];
+const OF_SKINS=["#F1C9A5","#E0A982","#C68B5E","#8D5A3B","#5C3A24"];
+const OF_HAIRS=[["Noir","#1A1410"],["Brun","#3B2416"],["Châtain","#6B4226"],["Blond foncé","#9C7444"],["Blond","#D2B07A"],["Roux","#8A3B1E"]];
+const OF_DEF=i=>({skin:OF_SKINS[i?3:1],hair:OF_HAIRS[i?0:1][1],photo:null,morph:{height:i?0.2:0,muscle:i?0.6:0.4,weight:i?-0.1:-0.2}});
 const OF_LOOKS=[{n:"Électrique",top:"#FF2E88",bottom:"#141418"},{n:"Océan",top:"#2EC5FF",bottom:"#1F2B5C"},{n:"Acid",top:"#B8FF3D",bottom:"#141418"},{n:"Nuit",top:"#8B5CFF",bottom:"#FF2E88"}];
 const F_TOPS={brassiere:"Brassière",crop:"Crop top",debardeur:"Débardeur"}, F_BOTTOMS={cycliste:"Cycliste",legging:"Legging 7/8",short:"Short"};
 const M_TOPS={debardeur:"Débardeur",tshirt:"T‑shirt",none:"Sans haut"};
 const FORMATS={solo:"Solo",duoF:"Duo femmes",duoH:"Duo hommes",mixte:"Duo mixte"};
 S.of={race:null,format:"solo",soloSex:"F",duoMode:"same",menMatch:"bottom",fTop:"brassiere",fBottom:"cycliste",mTop:"debardeur",top:"#FF2E88",bottom:"#141418",
-  ath:[{skin:OF_SKINS[1],photo:null},{skin:OF_SKINS[2],photo:null}]};
+  ath:[OF_DEF(0),OF_DEF(1)]};
 const OF_KEY="8stations-outfits";
 const ofSaved=()=>{try{return JSON.parse(localStorage.getItem(OF_KEY)||"{}")}catch(e){return{}}};
 function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.max(0,Math.min(255,Math.round(v+amt)));return"#"+[f(r),f(g),f(b)].map(v=>v.toString(16).padStart(2,"0")).join("")}
@@ -1532,14 +1550,13 @@ function ofCast(){ // liste des athlètes à afficher selon le format
 function renderOutfit(){
   const o=S.of,list=S.user?S.user.races.map(id=>EVENTS.find(e=>e.id===id)).filter(Boolean):upcoming();
   if(!o.race||!list.find(e=>e.id===o.race))o.race=(list.find(e=>e.id===S.ev.id)||list[0]).id;
-  if(S.ofLoaded!==o.race){S.ofLoaded=o.race;const sv=ofSaved()[o.race];if(sv)Object.assign(o,sv,{race:o.race})}
+  if(S.ofLoaded!==o.race){S.ofLoaded=o.race;const sv=ofSaved()[o.race];if(sv){Object.assign(o,sv,{race:o.race});o.ath=[0,1].map(i=>({...OF_DEF(i),...(sv.ath&&sv.ath[i]||{}),morph:{...OF_DEF(i).morph,...(sv.ath&&sv.ath[i]&&sv.ath[i].morph||{})}}))}}
   const ev=EVENTS.find(e=>e.id===o.race);
   $("#ofRace").innerHTML=list.map(e=>`<option value="${e.id}" ${e.id===o.race?"selected":""}>${e.flag} ${e.city} · ${fmtRange(e)}</option>`).join("");
   $("#ofFormat").innerHTML=Object.entries(FORMATS).map(([k,l])=>`<button type="button" data-fmt="${k}" class="${o.format===k?"on":""}"><b>${l}</b><small>${k==="solo"?"1 athlète":k==="mixte"?"1 femme + 1 homme":"2 athlètes"}</small></button>`).join("");
   const cast=ofCast(),hasF=cast.some(c=>c.sex==="F"),hasH=cast.some(c=>c.sex==="H");
   const lbl=(c,i)=>cast.length===1?(c.sex==="F"?"Toi · femme":"Toi · homme"):`Athlète ${i+1} · ${c.sex==="F"?"femme":"homme"}`;
-  $("#ofStage").innerHTML=`<div class="tag"><span><b>${ev.flag} ${ev.city}</b> · ${fmtRange(ev)}</span><span>${FORMATS[o.format]}</span></div>
-    ${cast.map((c,i)=>`<div class="ath">${avatar(c.sex,c.a,c.top,c.bottom)}<small>${lbl(c,i)}</small></div>`).join("")}<div class="start">START</div>`;
+  renderStage();
   const sw=(k,v)=>OF_COLORS.map(([n,c])=>`<button type="button" class="sw ${v===c?"on":""}" style="background:${c}" data-col="${k}" data-v="${c}" aria-label="${n}" title="${n}"></button>`).join("");
   const pills=(k,map,v)=>Object.entries(map).map(([id,l])=>`<button type="button" class="pill ${v===id?"on":""}" data-pk="${k}" data-v="${id}">${l}</button>`).join("");
   const saved=ofSaved()[o.race];
@@ -1557,11 +1574,38 @@ function renderOutfit(){
     <div class="athcards">${cast.map((c,i)=>`<div class="athcard"><b>${lbl(c,i)}</b>
       <label class="photo-btn">📷 ${c.a.photo?"Changer la photo":"Ajouter ma photo"}<input type="file" accept="image/*" data-photo="${o.ath.indexOf(c.a)}"></label>
       ${c.a.photo?`<button type="button" class="pill" data-rmphoto="${o.ath.indexOf(c.a)}">Retirer la photo</button>`:""}
-      <div class="sws">${OF_SKINS.map(t=>`<button type="button" class="sw ${c.a.skin===t?"on":""}" style="background:${t}" data-skin="${o.ath.indexOf(c.a)}" data-v="${t}" aria-label="Teinte de peau"></button>`).join("")}</div></div>`).join("")}</div>
-    <p class="ofnote">Ta photo reste sur ton appareil : elle n'est envoyée nulle part.</p>
+      <span class="mini">Peau</span><div class="sws">${OF_SKINS.map(t=>`<button type="button" class="sw ${c.a.skin===t?"on":""}" style="background:${t}" data-skin="${o.ath.indexOf(c.a)}" data-v="${t}" aria-label="Teinte de peau"></button>`).join("")}</div>
+      <span class="mini">Cheveux</span><div class="sws">${OF_HAIRS.map(([n,h])=>`<button type="button" class="sw ${c.a.hair===h?"on":""}" style="background:${h}" data-hair="${o.ath.indexOf(c.a)}" data-v="${h}" aria-label="Cheveux ${n}" title="${n}"></button>`).join("")}</div>
+      ${[["height","Taille","Petite","Grande"],["muscle","Muscles","Fins","Très musclés"],["weight","Silhouette","Fine","Robuste"]].map(([k,l,a0,a1])=>`<label class="morph"><span>${l}</span><input type="range" id="m-${o.ath.indexOf(c.a)}-${k}" min="-1" max="1" step="0.05" value="${c.a.morph[k]}" data-morph="${o.ath.indexOf(c.a)}" data-mk="${k}" aria-label="${l} : de ${a0} à ${a1}"></label>`).join("")}
+      </div>`).join("")}</div>
+    <p class="ofnote">Ta photo reste sur ton appareil : elle n'est envoyée nulle part. Elle s'affiche en médaillon sous ton avatar.</p>
     <div class="ofactions"><button type="button" class="btn" id="ofSave">${saved?"Mettre à jour l'outfit":"Enregistrer pour cette course"}</button>
       ${saved?`<span class="ofnote" style="margin:0;align-self:center">✓ Outfit enregistré pour ${ev.city}</span>`:""}</div>`;
 }
+/* --- scène : avatars 3D (three.js + MakeHuman), repli sur les avatars dessinés --- */
+let of3D=null,ofTimer=0;
+function load3D(){
+  if(of3D)return of3D;
+  const add=src=>new Promise((res,rej)=>{const sc=document.createElement("script");sc.src=src;sc.onload=res;sc.onerror=rej;document.head.appendChild(sc)});
+  of3D=(window.THREE?Promise.resolve():add("https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js")).then(()=>window.Avatar3D?null:add("assets/avatar3d.js"));
+  of3D.catch(()=>{of3D=null});
+  return of3D;
+}
+function renderStage(){
+  const o=S.of,ev=EVENTS.find(e=>e.id===o.race),cast=ofCast(),st=$("#ofStage");
+  const lbl=(c,i)=>cast.length===1?(c.sex==="F"?"Toi · femme":"Toi · homme"):`Athlète ${i+1} · ${c.sex==="F"?"femme":"homme"}`;
+  if(!st.querySelector(".of3d"))st.innerHTML=`<div class="tag"></div><div class="of3d" id="of3d"></div><div class="athl"></div>
+    <div class="views" role="group" aria-label="Angle de vue"><button type="button" data-view="0">Face</button><button type="button" data-view="${-Math.PI/2}">Profil</button><button type="button" data-view="${Math.PI}">Dos</button></div>
+    <div class="hint">↔ Fais glisser pour tourner</div><div class="ofload">Chargement des avatars 3D…</div>`;
+  st.querySelector(".tag").innerHTML=`<span><b>${ev.flag} ${ev.city}</b> · ${fmtRange(ev)}</span><span>${FORMATS[o.format]}</span>`;
+  st.querySelector(".athl").innerHTML=cast.map((c,i)=>`<span>${c.a.photo?`<img src="${c.a.photo}" alt="">`:""}${lbl(c,i)}</span>`).join("");
+  const cfgs=cast.map(c=>({sex:c.sex,skin:c.a.skin,hair:c.a.hair,morph:c.a.morph,top:{t:c.top.t,c:c.top.c},bottom:{t:c.sex==="F"?c.bottom.t:"short",c:c.bottom.c}}));
+  const box=$("#of3d");
+  load3D().then(()=>Avatar3D.show(box,cfgs)).then(()=>{st.classList.add("ready");st.classList.remove("flat")})
+    .catch(()=>{st.classList.add("ready","flat");box.innerHTML=`<div class="flatcast">${cast.map(c=>`<div class="ath">${avatar(c.sex,c.a,c.top,c.bottom)}</div>`).join("")}</div>`});
+}
+$("#v-outfit").addEventListener("input",e=>{const r=e.target.closest("input[data-morph]");if(!r)return;
+  S.of.ath[+r.dataset.morph].morph[r.dataset.mk]=+r.value;clearTimeout(ofTimer);ofTimer=setTimeout(renderStage,120)});
 $("#ofRace").onchange=e=>{S.of.race=e.target.value;renderOutfit()};
 $("#v-outfit").addEventListener("click",e=>{
   const o=S.of,t=e.target.closest("button");if(!t)return;
@@ -1570,6 +1614,8 @@ $("#v-outfit").addEventListener("click",e=>{
   else if(t.dataset.col){o[t.dataset.col]=t.dataset.v}
   else if(t.dataset.look){const l=OF_LOOKS[+t.dataset.look];o.top=l.top;o.bottom=l.bottom}
   else if(t.dataset.skin){o.ath[+t.dataset.skin].skin=t.dataset.v}
+  else if(t.dataset.hair){o.ath[+t.dataset.hair].hair=t.dataset.v}
+  else if(t.dataset.view!==undefined){if(window.Avatar3D)Avatar3D.setRotation(+t.dataset.view);return}
   else if(t.dataset.rmphoto){o.ath[+t.dataset.rmphoto].photo=null}
   else if(t.id==="ofSave"){const all=ofSaved(),{race,...rest}=o;all[race]=JSON.parse(JSON.stringify(rest));
     try{localStorage.setItem(OF_KEY,JSON.stringify(all));toast("👕 Outfit enregistré pour "+EVENTS.find(x=>x.id===race).city)}catch(err){toast("Impossible d'enregistrer sur cet appareil (stockage plein ou bloqué).")}}
