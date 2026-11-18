@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>8Stations</title>
+<meta name="theme-color" content="#0B0B12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2040%2046%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22kbg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23FF2E88%22/%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%238B5CFF%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232EC5FF%22/%3E%3C/linearGradient%3E%3C/defs%3E%0A%3Ccircle%20cx%3D%2220%22%20cy%3D%2212.5%22%20r%3D%228.5%22%20fill%3D%22none%22%20stroke%3D%22url%28%23kbg%29%22%20stroke-width%3D%224.2%22/%3E%0A%3Ccircle%20cx%3D%2220%22%20cy%3D%2231%22%20r%3D%2210.5%22%20fill%3D%22none%22%20stroke%3D%22url%28%23kbg%29%22%20stroke-width%3D%224.2%22%20stroke-dasharray%3D%2240%204.2%22%20transform%3D%22rotate%28200%2020%2031%29%22/%3E%0A%3Ccircle%20cx%3D%2220%22%20cy%3D%2231%22%20r%3D%222.6%22%20fill%3D%22%23FF2E88%22/%3E%0A%3Cg%20transform%3D%22translate%2829.8%2026%29%20rotate%28-20%29%20scale%281.25%29%22%3E%3Ccircle%20r%3D%225.3%22%20fill%3D%22%230B0B12%22/%3E%3Cpath%20d%3D%22M0%20-4.2%20L1.1%20-1.2%20L4.6%200.6%20L4.6%201.6%20L1.1%200.7%20L0.8%203.2%20L1.9%204%20L1.9%204.8%20L0%204.2%20L-1.9%204.8%20L-1.9%204%20L-0.8%203.2%20L-1.1%200.7%20L-4.6%201.6%20L-4.6%200.6%20L-1.1%20-1.2%20Z%22%20fill%3D%22%23fff%22/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0B12; --panel:#15151F; --panel2:#1E1E2B; --line:#2A2A3A;
+  --text:#F4F4F8; --muted:#9A9AB0;
+  --pink:#FF2E88; --blue:#2EC5FF; --lime:#B8FF3D; --yellow:#FFE14D; --violet:#8B5CFF;
+  --grad:linear-gradient(110deg,var(--pink),var(--violet) 55%,var(--blue));
+  --r:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+h1,h2,h3,.brand{font-family:Archivo,Inter,sans-serif;letter-spacing:-.01em}
+button,select,input{font:inherit;color:inherit}
+a{color:var(--blue)}
+
+/* Header */
+header{position:sticky;top:0;z-index:1000;background:rgba(11,11,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{max-width:1200px;margin:auto;display:flex;align-items:center;gap:16px;padding:12px 16px}
+.brand{font-weight:900;font-size:22px;display:flex;align-items:center;gap:8px}
+.brand .kb{width:32px;height:37px;display:block;filter:drop-shadow(0 2px 6px rgba(255,46,136,.35))}
+.brand{gap:4px!important}
+.brand em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+@media(max-width:640px){.bar{flex-wrap:wrap;row-gap:8px}.login{margin-left:auto}nav{order:3;width:100%;margin-left:0}nav button{padding:7px 10px;font-size:14px}}
+nav button{background:none;border:0;padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;white-space:nowrap;font-weight:600}
+nav button.on{color:var(--text);background:var(--panel2)}
+nav button .pro{font-size:10px;background:var(--lime);color:#111;border-radius:6px;padding:1px 5px;margin-left:4px}
+.login{border:1px solid var(--line);background:var(--panel);padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:600;white-space:nowrap}
+
+main{max-width:1200px;margin:auto;padding:20px 16px 80px}
+.view{display:none}.view.on{display:block}
+.hero h1{font-size:clamp(28px,5vw,48px);margin:8px 0 6px;line-height:1.05}
+.hero h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);margin:0 0 20px}
+
+/* Events */
+.events{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:18px}
+.events{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:200px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+.ev{scroll-snap-align:start}
+.evf input,.evf select{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;color:var(--text)}
+.evf input{min-width:180px}.evf .count{margin-left:auto;color:var(--muted);font-size:13px}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.tg{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;background:var(--panel2);color:var(--muted)}
+.tg.ok{background:#B8FF3D22;color:var(--lime)}.tg.hot{background:#FF2E8833;color:var(--pink)}
+.tba{font-size:13px;color:var(--muted);margin:-6px 0 18px}
+.ev{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;cursor:pointer;text-align:left;transition:.15s}
+.ev:hover{border-color:var(--violet)}
+.ev.on{border-color:transparent;background:linear-gradient(var(--panel),var(--panel)) padding-box,var(--grad) border-box;border:2px solid transparent}
+.ev b{display:block;font-family:Archivo;font-size:18px}
+.ev small{color:var(--muted)}
+.ev .date{color:var(--pink);font-weight:600;font-size:13px}
+
+/* Explorer layout */
+.explore{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media(max-width:900px){.explore{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+#map{height:520px;border-radius:var(--r);border:1px solid var(--line)}
+@media(max-width:900px){#map{height:380px}}
+.world-head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;margin:36px 0 12px}
+.world-head h2{margin:0 0 4px;font-size:26px}.world-head p{margin:0;color:var(--muted);font-size:14px}
+#world{height:520px;border-radius:var(--r);border:1px solid var(--line);background:#0e0e16}
+@media(max-width:900px){#world{height:360px}}
+.wpop{min-width:190px}.wpop div{padding:6px 0;border-bottom:1px dashed var(--line)}.wpop div:last-child{border:0}
+.wpop small{color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px}
+.chip.on{background:var(--panel2);border-color:var(--muted)}
+.chip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.range{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:14px;color:var(--muted)}
+input[type=range]{accent-color:var(--pink)}
+.list{display:flex;flex-direction:column;gap:8px;max-height:520px;overflow:auto}
+.item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;background:var(--panel2);border:1px solid transparent;cursor:pointer}
+.item:hover{border-color:var(--line)}
+.item.sel{border-color:var(--pink)}
+.item .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:20px;flex:none}
+.item .meta{flex:1;min-width:0}
+.item .meta b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .meta small{color:var(--muted)}
+.price{font-family:Archivo;font-weight:900;font-size:18px;text-align:right}
+.price small{display:block;font-family:Inter;font-weight:400;font-size:11px;color:var(--muted)}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--lime);color:#111;margin-left:6px}
+.tabs2{display:flex;gap:6px;margin-bottom:10px}
+.tabs2 button{flex:1;padding:8px;border-radius:10px;border:1px solid var(--line);background:none;cursor:pointer;font-weight:600;color:var(--muted)}
+.tabs2 button.on{color:var(--text);background:var(--panel2)}
+
+.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--grad);color:#fff}
+.btn.ghost{background:var(--panel2);border:1px solid var(--line)}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:9px}
+
+/* Package */
+.pkg{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+@media(max-width:900px){.pkg{grid-template-columns:1fr}}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+label.f select,label.f input{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--text)}
+.sec{margin:18px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.flight{display:flex;gap:12px;align-items:center;padding:12px;background:var(--panel2);border-radius:12px;border:1px solid transparent;cursor:pointer;margin-bottom:8px}
+.flight.sel{border-color:var(--blue)}
+.flight .t{flex:1}
+.flight .t b{font-family:Archivo}
+.flight .t small{color:var(--muted);display:block}
+.summary{position:sticky;top:80px}
+.sumline{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.sumline span:first-child{color:var(--muted)}
+.total{display:flex;justify-content:space-between;align-items:end;margin:14px 0}
+.total b{font-family:Archivo;font-size:34px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);cursor:pointer}
+.note{font-size:12px;color:var(--muted);margin-top:10px}
+
+/* Courses */
+.races{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.race{position:relative;overflow:hidden}
+.race::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--grad)}
+.race h3{margin:6px 0 2px}
+.race h3 .tg{vertical-align:middle;white-space:nowrap}
+.race .btn.sm{white-space:nowrap}
+.race .cd{font-family:Archivo;font-size:28px;font-weight:900;color:var(--blue)}
+.bud{display:flex;gap:6px;margin:10px 0;height:10px;border-radius:6px;overflow:hidden}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.saving{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-top:8px}
+.saving b{color:var(--lime)}
+
+/* Premium */
+.prem-hero{background:radial-gradient(circle at 10% 0%,rgba(255,46,136,.35),transparent 50%),radial-gradient(circle at 90% 100%,rgba(46,197,255,.3),transparent 50%),var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px;margin-bottom:16px}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}
+.day{flex:none;width:64px;padding:10px 0;text-align:center;border-radius:12px;background:var(--panel);border:1px solid var(--line);cursor:pointer}
+.day b{display:block;font-family:Archivo;font-size:18px}
+.day small{color:var(--muted);font-size:11px}
+.day.on{background:var(--grad);border-color:transparent}
+.day.on small{color:#fff}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.tip h4{margin:0 0 6px;display:flex;align-items:center;gap:8px;font-family:Archivo}
+.tip ul{margin:0;padding-left:18px;color:#d6d6e2;font-size:14px;line-height:1.6}
+.tip .k{width:30px;height:30px;border-radius:9px;display:grid;place-items:center}
+.lock{filter:blur(4px);pointer-events:none;user-select:none}
+.paywall{text-align:center;padding:24px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--panel2);border:1px solid var(--line);padding:12px 18px;border-radius:12px;transition:.25s;z-index:2000;max-width:90vw}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+/* Leaflet dark tweaks */
+.leaflet-container.offline{background:radial-gradient(circle,#2A2A3A 1px,transparent 1.2px) 0 0/22px 22px,#0E0E16}
+.leaflet-control-layers{background:var(--panel2)!important;color:var(--text);border:1px solid var(--line)!important;border-radius:10px!important;font-size:12px}
+.leaflet-control-layers-expanded{padding:6px 10px}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel2);color:var(--text)}
+.leaflet-popup-content b{font-family:Archivo}
+.pin{width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.pin span{transform:rotate(45deg);font-size:13px}
+.venue{width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;border:2px solid #fff;font-size:20px;box-shadow:0 0 0 6px rgba(255,46,136,.25)}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand"><svg class="kb" viewBox="0 0 40 46" aria-label="8"><defs><linearGradient id="kbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF2E88"/><stop offset=".55" stop-color="#8B5CFF"/><stop offset="1" stop-color="#2EC5FF"/></linearGradient></defs>
+<circle cx="20" cy="12.5" r="8.5" fill="none" stroke="url(#kbg)" stroke-width="4.2"/>
+<circle cx="20" cy="31" r="10.5" fill="none" stroke="url(#kbg)" stroke-width="4.2" stroke-dasharray="40 4.2" transform="rotate(200 20 31)"/>
+<circle cx="20" cy="31" r="2.6" fill="#FF2E88"/>
+<g transform="translate(29.8 26) rotate(-20) scale(1.25)"><circle r="5.3" fill="#0B0B12"/><path d="M0 -4.2 L1.1 -1.2 L4.6 0.6 L4.6 1.6 L1.1 0.7 L0.8 3.2 L1.9 4 L1.9 4.8 L0 4.2 L-1.9 4.8 L-1.9 4 L-0.8 3.2 L-1.1 0.7 L-4.6 1.6 L-4.6 0.6 L-1.1 -1.2 Z" fill="#fff"/></g></svg><em>Stations</em></div>
+    <nav id="nav">
+      <button data-v="explore" class="on">Explorer</button>
+      <button data-v="package">Mon package</button>
+      <button data-v="races">Mes courses</button>
+      <button data-v="premium">Prépa J‑7<span class="pro">PRO</span></button>
+    </nav>
+    <button class="login" id="loginBtn">Se connecter</button>
+  </div>
+</header>
+
+<main>
+  <!-- EXPLORER -->
+  <section class="view on" id="v-explore">
+    <div class="hero">
+      <h1>Ta course. Ton voyage. <span>Tout en un.</span></h1>
+      <p>Toutes les courses Hyrox dans le monde. Choisis la tienne : hôtels à moins de 5 km, vols au meilleur prix, salles et excursions autour du lieu de course.</p>
+    </div>
+    <div class="controls evf" id="evFilters"></div>
+    <div class="events" id="events"></div>
+    <p class="tba" id="tba"></p>
+    <div class="explore">
+      <div>
+        <div class="controls">
+          <button class="chip on" data-layer="hotels"><i style="background:var(--pink)"></i>Hôtels</button>
+          <button class="chip on" data-layer="gyms"><i style="background:var(--lime)"></i>Salles</button>
+          <button class="chip on" data-layer="tours"><i style="background:var(--blue)"></i>Excursions</button>
+          <div class="range">Rayon <input type="range" id="radius" min="1" max="5" step="0.5" value="5"> <b id="radiusVal">5 km</b></div>
+        </div>
+        <div id="map"></div>
+      </div>
+      <div class="card">
+        <div class="tabs2" id="listTabs">
+          <button data-t="hotels" class="on">🏨 Hôtels</button>
+          <button data-t="gyms">🏋️ Salles</button>
+          <button data-t="tours">🎟 Excursions</button>
+        </div>
+        <div class="list" id="list"></div>
+      </div>
+    </div>
+    <div class="world-head">
+      <div><h2>🌍 Les courses dans le monde</h2><p id="worldSub"></p></div>
+      <div class="legend" id="worldLegend"></div>
+    </div>
+    <div id="world"></div>
+  </section>
+
+  <!-- PACKAGE -->
+  <section class="view" id="v-package">
+    <div class="hero"><h1 id="pkgTitle">Ton package</h1><p>Tout est présélectionné au meilleur prix. Modifie ce que tu veux.</p></div>
+    <div class="pkg">
+      <div class="card">
+        <div class="row">
+          <label class="f">Aéroport de départ<select id="dep"></select></label>
+          <label class="f">Aller<input type="date" id="dIn"></label>
+          <label class="f">Retour<input type="date" id="dOut"></label>
+        </div>
+        <div class="row">
+          <label class="f">Voyageurs<div class="stepper"><button data-s="pax" data-d="-1">−</button><b id="pax">1</b><button data-s="pax" data-d="1">+</button></div></label>
+          <label class="f">Bagages soute (23 kg)<div class="stepper"><button data-s="bags" data-d="-1">−</button><b id="bags">0</b><button data-s="bags" data-d="1">+</button></div></label>
+          <label class="f">Tri<select id="sort"><option value="price">Meilleur prix</option><option value="time">Plus rapide</option></select></label>
+        </div>
+        <div class="sec">✈️ Transport</div>
+        <div id="flights"></div>
+        <div class="sec">🏨 Hôtel (≤ 5 km du site)</div>
+        <div id="pkgHotels"></div>
+        <div class="sec">🎟 Excursions ajoutées</div>
+        <div id="pkgTours"></div>
+      </div>
+      <div>
+        <div class="card summary">
+          <h3 style="margin:0 0 8px">Récapitulatif</h3>
+          <div id="sum"></div>
+          <div class="total"><span>Total</span><b id="total">0 €</b></div>
+          <button class="btn" style="width:100%" id="book">Réserver le package</button>
+          <p class="note">Prototype : prix et disponibilités simulés. En production, réservation via les API partenaires (hôtels, vols, activités).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RACES -->
+  <section class="view" id="v-races">
+    <div class="hero"><h1>Mes <span>courses à venir</span></h1><p>Ton calendrier et le budget estimé de chaque déplacement, mis à jour selon les meilleurs prix.</p></div>
+    <div id="racesBody"></div>
+  </section>
+
+  <!-- PREMIUM -->
+  <section class="view" id="v-premium">
+    <div class="prem-hero">
+      <h1 style="margin:0 0 6px">Prépa <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">J‑7 → Jour J</span></h1>
+      <p style="margin:0;color:var(--muted)" id="premSub">Hydratation, nutrition, sommeil, affûtage : ton plan jour par jour, avec rappels.</p>
+    </div>
+    <div id="premBody"></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
+<script>
+/* ======================= DONNÉES DE DÉMO =======================
+   Toutes les dates, prix et établissements sont fictifs.
+   En production : remplacés par les API (voir README.md). */
+/* Calendrier officiel HYROX — source : hyroxfrance.com/fr/trouve-ta-course (relevé du 18/11/2026).
+   Courses adultes uniquement (les Youngstars sont exclues). Coordonnées des lieux : approximatives (± quelques centaines de m).
+   venue null = lieu pas encore communiqué (point au centre-ville). */
+const RAW = [
+// id, ville, pays, drapeau, région, début, fin, lieu, lat, lng, aéroport, [lat,lng], lien officiel, tag, nom officiel
+["dal26", "Dallas", "États-Unis", "🇺🇸", "Amérique du Nord", "2026-11-18", "2026-11-22", "Kay Bailey Hutchison Convention Center", 32.774, -96.8003, "DFW", [32.9, -97.04], "https://hyroxfrance.com/fr/event/hyrox-dallas/", "", "HYROX Dallas"],
+["gua26", "Guangzhou", "Chine", "🇨🇳", "Asie-Pacifique", "2026-11-20", "2026-11-22", "Xingang East Rd, Haizhu", 23.101, 113.368, "CAN", [23.39, 113.3], "https://hyroxfrance.com/fr/event/hyrox-guangzhou/", "", "Simplove HYROX Guangzhou"],
+["poz26", "Poznań", "Pologne", "🇵🇱", "Europe", "2026-11-20", "2026-11-22", "Poznań International Fair (MTP)", 52.401, 16.91, "POZ", [52.42, 16.83], "https://hyroxfrance.com/fr/event/hyrox-poznan/", "", "BOSS PARFUMS HYROX POZNAŃ"],
+["rio26", "Rio de Janeiro", "Brésil", "🇧🇷", "Amérique du Sud", "2026-11-21", "2026-11-22", "Riocentro", -22.9776, -43.4117, "GIG", [-22.81, -43.25], "https://hyroxfrance.com/fr/event/hyrox-rio-de-janeiro/", "", "Chevrolet HYROX Rio de Janeiro"],
+["sin26", "Singapour", "Singapour", "🇸🇬", "Asie-Pacifique", "2026-11-26", "2026-11-29", "Singapore EXPO", 1.3349, 103.9614, "SIN", [1.36, 103.99], "https://hyroxfrance.com/fr/event/hyrox-singapore/", "", "AIA HYROX Singapore"],
+["joh26", "Johannesburg", "Afrique du Sud", "🇿🇦", "Afrique", "2026-11-26", "2026-11-29", "Johannesburg Expo Centre (Nasrec)", -26.239, 27.985, "JNB", [-26.13, 28.24], "https://hyroxfrance.com/fr/event/virgin-active-hyrox-johannesburg-26-27/", "", "Virgin Active HYROX Johannesburg"],
+["utr26", "Utrecht", "Pays-Bas", "🇳🇱", "Europe", "2026-11-26", "2026-11-30", "Jaarbeurs Utrecht", 52.088, 5.104, "AMS", [52.31, 4.76], "https://hyroxfrance.com/fr/event/hyrox-utrecht/", "", "Decathlon HYROX Utrecht"],
+["gan26", "Gandhinagar (Gujarat)", "Inde", "🇮🇳", "Asie-Pacifique", "2026-11-26", "2026-11-28", "Helipad Exhibition Center", 23.229, 72.65, "AMD", [23.07, 72.63], "https://hyroxfrance.com/fr/event/hyrox-gujarat/", "", "INDUSIND BANK HYROX GUJARAT"],
+["dub26", "Dubaï", "Émirats arabes unis", "🇦🇪", "Asie-Pacifique", "2026-11-27", "2026-11-28", "Dubai Exhibition Centre (Expo City)", 24.964, 55.149, "DXB", [25.25, 55.36], "https://hyroxfrance.com/fr/event/hyrox-dubai/", "", "HYROX Dubai"],
+["lon26", "Londres", "Royaume-Uni", "🇬🇧", "Europe", "2026-12-02", "2026-12-06", "ExCeL London", 51.5085, 0.0295, "LHR", [51.47, -0.45], "https://hyroxfrance.com/fr/event/hyrox-london-excel/", "Elite 15", "Amazon HYROX London"],
+["ana26", "Anaheim", "États-Unis", "🇺🇸", "Amérique du Nord", "2026-12-03", "2026-12-06", "Anaheim Convention Center", 33.8003, -117.9197, "LAX", [33.94, -118.41], "https://hyroxfrance.com/fr/event/centr-hyrox-anaheim-26-27/", "", "Centr HYROX Anaheim"],
+["mil26", "Milan", "Italie", "🇮🇹", "Europe", "2026-12-04", "2026-12-06", "Fiera Milano (Rho)", 45.5206, 9.087, "MXP", [45.63, 8.72], "https://hyroxfrance.com/fr/event/hyrox-milan/", "", "HYROX Milan"],
+["sny26", "Sanya", "Chine", "🇨🇳", "Asie-Pacifique", "2026-12-05", "2026-12-06", "Poly International Expo Center", 18.33, 109.7, "SYX", [18.3, 109.41], "https://hyroxfrance.com/fr/event/30454/", "", "24/7 FITNESS HYROX Sanya"],
+["mel26", "Melbourne", "Australie", "🇦🇺", "Asie-Pacifique", "2026-12-09", "2026-12-13", "Melbourne Convention & Exhibition Centre", -37.8253, 144.953, "MEL", [-37.67, 144.84], "https://hyroxfrance.com/fr/event/hyrox-melbourne/", "", "BYD HYROX Melbourne"],
+["nas26", "Nashville", "États-Unis", "🇺🇸", "Amérique du Nord", "2026-12-09", "2026-12-13", "Music City Center", 36.1576, -86.7783, "BNA", [36.12, -86.68], "https://hyroxfrance.com/fr/event/hyrox-nashville/", "", "HYROX Nashville"],
+["sto26", "Stockholm", "Suède", "🇸🇪", "Europe", "2026-12-10", "2026-12-13", "Strawberry Arena (Solna)", 59.3727, 18.0003, "ARN", [59.65, 17.93], "https://hyroxfrance.com/fr/event/intersport-hyrox-stockholm-arena/", "", "INTERSPORT HYROX Stockholm"],
+["fra26", "Francfort", "Allemagne", "🇩🇪", "Europe", "2026-12-10", "2026-12-13", "Messe Frankfurt", 50.1115, 8.6466, "FRA", [50.03, 8.57], "https://hyroxfrance.com/fr/event/fitness-first-hyrox-frankfurt/", "", "Fitness First HYROX Frankfurt"],
+["kua26", "Kuala Lumpur", "Malaisie", "🇲🇾", "Asie-Pacifique", "2026-12-10", "2026-12-13", "MITEC", 3.1795, 101.665, "KUL", [2.74, 101.7], "https://hyroxfrance.com/fr/event/hyrox-kuala-lumpur/", "", "AirAsia HYROX Kuala Lumpur"],
+["par26", "Paris", "France", "🇫🇷", "Europe", "2026-12-12", "2026-12-20", "Paris Expo – Porte de Versailles", 48.8323, 2.2875, "CDG", [49.01, 2.55], "https://hyroxfrance.com/fr/event/fitness-park-hyrox-paris/", "", "FITNESS PARK HYROX PARIS"],
+["gan262", "Gand", "Belgique", "🇧🇪", "Europe", "2026-12-17", "2026-12-20", "Flanders Expo", 51.024, 3.692, "BRU", [50.9, 4.48], "https://hyroxfrance.com/fr/event/hyrox-gent/", "", "HYROX Gent"],
+["van26", "Vancouver", "Canada", "🇨🇦", "Amérique du Nord", "2026-12-17", "2026-12-20", "Vancouver Convention Centre", 49.2888, -123.1162, "YVR", [49.19, -123.18], "https://hyroxfrance.com/fr/event/hyrox-vancouver/", "", "HYROX Vancouver"],
+["hel26", "Helsinki", "Finlande", "🇫🇮", "Europe", "2026-12-18", "2026-12-20", "Messukeskus Helsinki", 60.2036, 24.937, "HEL", [60.32, 24.96], "https://hyroxfrance.com/fr/event/hyrox-helsinki-2/", "", "HYROX HELSINKI I"],
+["hon27", "Hong Kong", "Hong Kong", "🇭🇰", "Asie-Pacifique", "2027-01-07", "2027-01-10", "AsiaWorld-Expo", 22.3233, 113.942, "HKG", [22.31, 113.92], "https://hyroxfrance.com/fr/event/hyrox-hong-kong/", "", "AIA HYROX Hong Kong"],
+["gre27", "Greater Noida (Delhi)", "Inde", "🇮🇳", "Asie-Pacifique", "2027-01-15", "2027-01-17", "India Expo Mart", 28.457, 77.504, "DEL", [28.56, 77.1], "https://hyroxfrance.com/fr/event/hyrox-noida/", "", "Hyrox Noida"],
+["man27", "Manchester", "Royaume-Uni", "🇬🇧", "Europe", "2027-01-20", "2027-01-31", "Manchester Central", 53.4762, -2.247, "MAN", [53.36, -2.27], "https://hyroxfrance.com/fr/event/hyrox-manchester/", "", "Creapure HYROX Manchester"],
+["osa27", "Osaka", "Japon", "🇯🇵", "Asie-Pacifique", "2027-01-21", "2027-01-25", "INTEX Osaka", 34.638, 135.421, "KIX", [34.43, 135.24], "https://hyroxfrance.com/fr/event/hyrox-osaka/", "", "BYD HYROX Osaka"],
+["ams27", "Amsterdam", "Pays-Bas", "🇳🇱", "Europe", "2027-01-22", "2027-01-31", "RAI Amsterdam", 52.3406, 4.8888, "AMS", [52.31, 4.76], "https://hyroxfrance.com/fr/event/hyrox-amsterdam/", "", "HYROX Amsterdam"],
+["vro27", "Vérone", "Italie", "🇮🇹", "Europe", "2027-01-28", "2027-01-31", "Fiera di Verona", 45.422, 10.987, "VRN", [45.4, 10.89], "https://hyroxfrance.com/fr/event/hyrox-verona/", "", "HYROX Verona"],
+["tou27", "Toulouse", "France", "🇫🇷", "Europe", "2027-02-03", "2027-02-07", "MEETT Parc des Expositions", 43.688, 1.306, "TLS", [43.63, 1.36], "https://hyroxfrance.com/fr/event/hyrox-toulouse/", "", "LUCIS HYROX TOULOUSE"],
+["auc27", "Auckland", "Nouvelle-Zélande", "🇳🇿", "Asie-Pacifique", "2027-02-04", "2027-02-07", "Auckland Showgrounds", -36.892, 174.762, "AKL", [-37.01, 174.79], "https://hyroxfrance.com/fr/event/hyrox-auckland/", "", "BYD HYROX Auckland"],
+["bil27", "Bilbao", "Espagne", "🇪🇸", "Europe", "2027-02-06", "2027-02-07", "Bilbao Exhibition Centre (Barakaldo)", 43.288, -2.986, "BIO", [43.3, -2.91], "https://hyroxfrance.com/fr/event/hyrox-bilbao/", "", "HYROX Bilbao"],
+["ban27", "Bangkok", "Thaïlande", "🇹🇭", "Asie-Pacifique", "2027-02-11", "2027-02-14", "BITEC Bangna", 13.669, 100.609, "BKK", [13.69, 100.75], "https://hyroxfrance.com/fr/event/hyrox-bangkok/", "Elite 15", "BYD HYROX Bangkok"],
+["chi27", "Chicago", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-02-11", "2027-02-15", "Navy Pier", 41.8917, -87.6086, "ORD", [41.98, -87.9], "https://hyroxfrance.com/fr/event/creapure-hyrox-chicago-26-27/", "", "Creapure HYROX Chicago"],
+["ble27", "Bâle", "Suisse", "🇨🇭", "Europe", "2027-02-12", "2027-02-14", "Messe Basel", 47.563, 7.6, "BSL", [47.59, 7.53], "https://hyroxfrance.com/fr/event/hyrox-basel/", "", "HYROX Basel"],
+["can27", "Cancún", "Mexique", "🇲🇽", "Amérique du Nord", "2027-02-18", "2027-02-21", "Zona Hotelera (Av. Fonatur)", 21.135, -86.747, "CUN", [21.04, -86.87], "https://hyroxfrance.com/fr/event/hyrox-cancun/", "", "HYROX Cancun"],
+["kat27", "Katowice", "Pologne", "🇵🇱", "Europe", "2027-02-19", "2027-02-21", "International Congress Centre", 50.266, 19.025, "KTW", [50.47, 19.08], "https://hyroxfrance.com/fr/event/hyrox-katowice/", "", "DAFI HYROX KATOWICE"],
+["vie27", "Vienne", "Autriche", "🇦🇹", "Europe", "2027-02-19", "2027-02-21", "Messe Wien", 48.217, 16.406, "VIE", [48.11, 16.57], "https://hyroxfrance.com/fr/event/hyrox-vienna/", "", "INTERSPORT HYROX Vienna"],
+["pho27", "Phoenix (Glendale)", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-02-25", "2027-02-28", "State Farm Stadium", 33.5276, -112.2626, "PHX", [33.43, -112.01], "https://hyroxfrance.com/fr/event/inbody-hyrox-phoenix-26-27/", "", "InBody HYROX Phoenix"],
+["mal27", "Malines", "Belgique", "🇧🇪", "Europe", "2027-03-03", "2027-03-07", "Plattebeekstraat 1, Mechelen", 51.028, 4.495, "BRU", [50.9, 4.48], "https://hyroxfrance.com/fr/event/hyrox-mechelen/", "", "HYROX Mechelen"],
+["han27", "Hanoï", "Viêt Nam", "🇻🇳", "Asie-Pacifique", "2027-03-06", "2027-03-07", "Vietnam Exposition Center", 21.125, 105.79, "HAN", [21.22, 105.81], "https://hyroxfrance.com/fr/event/hyrox-hanoi/", "", "AIA HYROX Hanoi"],
+["san27", "Santiago", "Chili", "🇨🇱", "Amérique du Sud", "2027-03-06", "2027-03-06", null, -33.4489, -70.6693, "SCL", [-33.39, -70.79], "https://hyroxfrance.com/fr/event/hyrox-santiago/", "", "HYROX Santiago"],
+["gla27", "Glasgow", "Royaume-Uni", "🇬🇧", "Europe", "2027-03-10", "2027-03-14", "Scottish Event Campus (SEC)", 55.8607, -4.288, "GLA", [55.87, -4.43], "https://hyroxfrance.com/fr/event/hyrox-glasgow-2/", "", "HYROX Glasgow"],
+["tai27", "Taipei", "Taïwan", "🇹🇼", "Asie-Pacifique", "2027-03-12", "2027-03-14", "Nangang Exhibition Centre", 25.057, 121.617, "TPE", [25.08, 121.23], "https://hyroxfrance.com/fr/event/hyrox-taipei/", "", "HYROX Taipei"],
+["las27", "Las Vegas", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-03-12", "2027-03-14", "Las Vegas Convention Center", 36.131, -115.151, "LAS", [36.08, -115.15], "https://hyroxfrance.com/fr/event/hyrox-las-vegas-26-27/", "Elite 15", "myfitnesspal HYROX Las Vegas"],
+["mad27", "Madrid", "Espagne", "🇪🇸", "Europe", "2027-03-17", "2027-03-21", "IFEMA Madrid", 40.464, -3.616, "MAD", [40.49, -3.57], "https://hyroxfrance.com/fr/event/hyrox-madrid/", "", "Fitness Park HYROX Madrid"],
+["gua27", "Guadalajara", "Mexique", "🇲🇽", "Amérique du Nord", "2027-03-19", "2027-03-21", "Expo Guadalajara", 20.653, -103.392, "GDL", [20.52, -103.31], "https://hyroxfrance.com/fr/event/hyrox-guadalajara/", "", "HYROX Guadalajara"],
+["bue27", "Buenos Aires", "Argentine", "🇦🇷", "Amérique du Sud", "2027-03-20", "2027-03-21", "La Rural", -34.58, -58.42, "EZE", [-34.82, -58.54], "https://hyroxfrance.com/fr/event/hyrox-buenos-aires/", "", "HYROX Buenos Aires"],
+["cop27", "Copenhague", "Danemark", "🇩🇰", "Europe", "2027-03-25", "2027-03-28", "Bella Center", 55.6375, 12.577, "CPH", [55.62, 12.65], "https://hyroxfrance.com/fr/event/hyrox-copenhagen/", "", "BIOTHERM HYROX Copenhagen"],
+["lec27", "Le Cap", "Afrique du Sud", "🇿🇦", "Afrique", "2027-03-25", "2027-03-28", "CTICC (Convention Square)", -33.915, 18.4256, "CPT", [-33.97, 18.6], "https://hyroxfrance.com/fr/event/virgin-active-hyrox-cape-town/", "", "Virgin Active HYROX Cape Town"],
+["mia27", "Miami Beach", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-03-26", "2027-03-28", "Miami Beach Convention Center", 25.7951, -80.134, "MIA", [25.79, -80.29], "https://hyroxfrance.com/fr/event/sweat-pals-hyrox-miami-beach-26-27/", "", "Sweatpals HYROX Miami Beach"],
+["bri27", "Brisbane", "Australie", "🇦🇺", "Asie-Pacifique", "2027-03-31", "2027-04-05", "Brisbane Convention & Exhibition Centre", -27.4766, 153.0183, "BNE", [-27.38, 153.12], "https://hyroxfrance.com/fr/event/hyrox-brisbane/", "", "BYD HYROX Brisbane"],
+["rot27", "Rotterdam", "Pays-Bas", "🇳🇱", "Europe", "2027-04-01", "2027-04-04", "Rotterdam Ahoy", 51.884, 4.488, "AMS", [52.31, 4.76], "https://hyroxfrance.com/fr/event/hyrox-rotterdam/", "", "Decathlon HYROX Rotterdam"],
+["hou27", "Houston", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-04-01", "2027-04-04", "NRG Center", 29.685, -95.408, "IAH", [29.99, -95.34], "https://hyroxfrance.com/fr/event/hyrox-houston-26-27/", "", "Academy HYROX Houston"],
+["bar27", "Bari", "Italie", "🇮🇹", "Europe", "2027-04-02", "2027-04-04", "Nuova Fiera del Levante", 41.133, 16.841, "BRI", [41.14, 16.76], "https://hyroxfrance.com/fr/event/hyrox-bari/", "", "HYROX Bari"],
+["var27", "Varsovie", "Pologne", "🇵🇱", "Europe", "2027-04-07", "2027-04-11", "PGE Narodowy", 52.2395, 21.0458, "WAW", [52.17, 20.97], "https://hyroxfrance.com/fr/event/hyrox-warsaw-26-27/", "", "MEDICOVER SPORT HYROX WARSAW"],
+["par27", "Paris – Grand Palais", "France", "🇫🇷", "Europe", "2027-04-08", "2027-04-12", "Grand Palais", 48.8661, 2.3125, "CDG", [49.01, 2.55], "https://hyroxfrance.com/fr/event/maybelline-hyrox-paris-grand-palais/", "", "MAYBELLINE HYROX PARIS GRAND PALAIS"],
+["col27", "Cologne", "Allemagne", "🇩🇪", "Europe", "2027-04-08", "2027-04-11", "Koelnmesse", 50.947, 6.983, "CGN", [50.87, 7.14], "https://hyroxfrance.com/fr/event/all-inclusive-fitness-hyrox-cologne/", "", "all inclusive Fitness HYROX Cologne"],
+["mla27", "Málaga", "Espagne", "🇪🇸", "Europe", "2027-04-15", "2027-04-18", "Palacio de Ferias y Congresos (FYCMA)", 36.69, -4.451, "AGP", [36.67, -4.49], "https://hyroxfrance.com/fr/event/hyrox-malaga/", "", "HYROX Málaga"],
+["nag27", "Nagoya", "Japon", "🇯🇵", "Asie-Pacifique", "2027-04-16", "2027-04-18", "Port Messe Nagoya", 35.05, 136.841, "NGO", [34.86, 136.81], "https://hyroxfrance.com/fr/event/hyrox-nagoya/", "", "JR Central HYROX Nagoya"],
+["hel27", "Helsinki", "Finlande", "🇫🇮", "Europe", "2027-04-16", "2027-04-18", "Messukeskus Helsinki", 60.2036, 24.937, "HEL", [60.32, 24.96], "https://hyroxfrance.com/fr/event/hyrox-helsinki/", "", "HYROX HELSINKI II"],
+["mon27", "Monterrey", "Mexique", "🇲🇽", "Amérique du Nord", "2027-04-16", "2027-04-18", "Parque Fundidora", 25.678, -100.285, "MTY", [25.78, -100.11], "https://hyroxfrance.com/fr/event/hyrox-monterrey/", "", "HYROX Monterrey"],
+["ott27", "Ottawa", "Canada", "🇨🇦", "Amérique du Nord", "2027-04-21", "2027-04-25", null, 45.4215, -75.6972, "YOW", [45.32, -75.67], "https://hyroxfrance.com/fr/event/biotherm-hyrox-ottawa-26-27/", "", "BIOTHERM HYROX Ottawa"],
+["atl27", "Atlanta", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-04-23", "2027-04-25", "Georgia World Congress Center", 33.759, -84.4, "ATL", [33.64, -84.43], "https://hyroxfrance.com/fr/event/factor_-hyrox-atlanta/", "", "Factor_ HYROX Atlanta"],
+["lon27", "Londres – Olympia", "Royaume-Uni", "🇬🇧", "Europe", "2027-04-24", "2027-05-02", "Olympia London", 51.496, -0.21, "LHR", [51.47, -0.45], "https://hyroxfrance.com/fr/event/hyrox-london-olympia-2/", "", "Original Source HYROX London Olympia"],
+["cra27", "Cracovie", "Pologne", "🇵🇱", "Europe", "2027-05-07", "2027-05-09", "EXPO Kraków", 50.07, 20.009, "KRK", [50.08, 19.8], "https://hyroxfrance.com/fr/event/hyrox-krakow-26-27/", "", "HYROX KRAKÓW"],
+["min27", "Minneapolis", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-05-07", "2027-05-09", "U.S. Bank Stadium", 44.9737, -93.2575, "MSP", [44.88, -93.22], "https://hyroxfrance.com/fr/event/hyrox-minneapolis-26-27/", "", "HYROX Minneapolis"],
+["sop27", "São Paulo", "Brésil", "🇧🇷", "Amérique du Sud", "2027-05-08", "2027-05-09", null, -23.5505, -46.6333, "GRU", [-23.43, -46.47], "https://hyroxfrance.com/fr/event/hyrox-sao-paulo/", "", "HYROX São Paulo"],
+["lyo27", "Lyon", "France", "🇫🇷", "Europe", "2027-05-12", "2027-05-16", "Eurexpo Lyon (Chassieu)", 45.7317, 4.948, "LYS", [45.72, 5.08], "https://hyroxfrance.com/fr/event/hyrox-lyon/", "Elite 15", "HYROX LYON"],
+["inc27", "Incheon", "Corée du Sud", "🇰🇷", "Asie-Pacifique", "2027-05-13", "2027-05-16", "Songdo Convensia", 37.388, 126.644, "ICN", [37.46, 126.44], "https://hyroxfrance.com/fr/event/hyrox-incheon/", "", "BYD HYROX Incheon"],
+["san272", "San Diego", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-05-13", "2027-05-16", "San Diego Convention Center", 32.7069, -117.1625, "SAN", [32.73, -117.19], "https://hyroxfrance.com/fr/event/hyrox-san-diego-26-27/", "", "EōS Fitness HYROX San Diego"],
+["ban272", "Bangalore", "Inde", "🇮🇳", "Asie-Pacifique", "2027-05-19", "2027-05-23", "BIEC", 13.063, 77.475, "BLR", [13.2, 77.71], "https://hyroxfrance.com/fr/event/hyrox-bengaluru/", "", "Hyrox Bengaluru"],
+["car27", "Cardiff", "Royaume-Uni", "🇬🇧", "Europe", "2027-05-20", "2027-05-29", "Principality Stadium", 51.4782, -3.1826, "LHR", [51.47, -0.45], "https://hyroxfrance.com/fr/event/hyrox-cardiff-2/", "", "HYROX Cardiff"],
+["por27", "Portland", "États-Unis", "🇺🇸", "Amérique du Nord", "2027-05-21", "2027-05-23", "Oregon Convention Center", 45.5287, -122.663, "PDX", [45.59, -122.6], "https://hyroxfrance.com/fr/event/thefeed-hyrox-portland-26-27/", "", "The Feed HYROX Portland"],
+["rim27", "Rimini", "Italie", "🇮🇹", "Europe", "2027-05-27", "2027-05-30", "Fiera di Rimini", 44.068, 12.524, "BLQ", [44.53, 11.29], "https://hyroxfrance.com/fr/event/hyrox-rimini/", "", "HYROX Rimini"],
+["rig27", "Riga", "Lettonie", "🇱🇻", "Europe", "2027-05-28", "2027-05-30", "Ķīpsala Exhibition Centre", 56.959, 24.087, "RIX", [56.92, 23.97], "https://hyroxfrance.com/fr/event/hyrox-riga/", "", "HYROX RIGA"],
+["hkwc27", "Hong Kong", "Hong Kong", "🇭🇰", "Asie-Pacifique", "2027-06-10", "2027-06-13", "AsiaWorld-Expo", 22.3233, 113.942, "HKG", [22.31, 113.92], "https://hyroxfrance.com/fr/event/puma-hyrox-world-championships-hong-kong/", "Championnats du monde", "PUMA HYROX World Championships Hong Kong"]
+];
+const EVENTS = RAW.map(([id,city,country,flag,region,start,end,venue,lat,lng,iata,ap,url,tag,name])=>({id,city,country,flag,region,date:start,end,venue:venue||"Lieu à confirmer",venueKnown:!!venue,lat,lng,iata,ap,url,tag,name}));
+/* Annoncées sans date + saison 2027/28 (juillet–décembre 2027) pas encore publiée */
+const TBA = ["🇺🇸 New York"];
+const AIRPORTS = [
+  ["CDG","Paris CDG",49.01,2.55],["ORY","Paris Orly",48.72,2.38],["LYS","Lyon",45.72,5.08],["MRS","Marseille",43.44,5.22],
+  ["NCE","Nice",43.66,7.21],["BOD","Bordeaux",44.83,-0.72],["NTE","Nantes",47.15,-1.61],["TLS","Toulouse",43.63,1.36],
+  ["LIL","Lille",50.56,3.09],["GVA","Genève",46.24,6.11],["BRU","Bruxelles",50.90,4.48],
+  ["LHR","Londres Heathrow",51.47,-0.45],["AMS","Amsterdam",52.31,4.76],["FRA","Francfort",50.03,8.57],["MAD","Madrid",40.49,-3.57],["BCN","Barcelone",41.30,2.08],
+  ["FCO","Rome",41.80,12.25],["ZRH","Zurich",47.46,8.55],["YUL","Montréal",45.47,-73.74],["JFK","New York JFK",40.64,-73.78],["DXB","Dubaï",25.25,55.36],["SIN","Singapour",1.36,103.99],["SYD","Sydney",-33.94,151.18]
+];
+const HOTEL_NAMES=["Hôtel Central","Urban Stay","The Athlete Inn","Park Suites","Le Relais","Novo City","Grand Avenue","Pulse Hotel","Studio Loft","Riverside","Green Lodge","Metro Rooms","Boutique 21","Arena Hotel","Sunrise Inn"];
+const GYM_NAMES=["CrossBox","Iron Factory","Functional Lab","Fit Hub","Power Garage","Run & Row Club","Athletic Center"];
+
+/* RNG déterministe pour avoir des données stables */
+function rng(seed){let h=0;for(const c of seed)h=Math.imul(31,h)+c.charCodeAt(0)|0;return()=>{h|=0;h=h+0x6D2B79F5|0;let t=Math.imul(h^h>>>15,1|h);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const km=(a,b,c,d)=>{const R=6371,r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 2*R*Math.asin(Math.sqrt(x))};
+function around(ev,r,d){const a=r()*Math.PI*2;return[ev.lat+d/111*Math.cos(a),ev.lng+d/(111*Math.cos(ev.lat*Math.PI/180))*Math.sin(a)]}
+function genPlaces(ev){
+  const r=rng(ev.id);
+  const hotels=HOTEL_NAMES.map((n,i)=>{const d=0.3+r()*6.2,[lat,lng]=around(ev,r,d);return{id:ev.id+"h"+i,name:n,lat,lng,dist:d,price:Math.round(65+r()*190),rating:(7+r()*2.6).toFixed(1),stars:3+Math.floor(r()*3)}});
+  const gyms=GYM_NAMES.map((n,i)=>{const d=0.2+r()*4.6,[lat,lng]=around(ev,r,d);return{id:ev.id+"g"+i,name:n+" "+ev.city,lat,lng,dist:d,price:Math.round(12+r()*18),hyrox:r()>.5}});
+  const tours=[`Visite guidée de ${ev.city}`,`Food tour ${ev.city}`,`City tour à vélo`,`Musée incontournable – coupe-file`,`Balade au coucher du soleil`].map((n,i)=>{const d=0.8+r()*4,[lat,lng]=around(ev,r,d);return{id:ev.id+"t"+i,name:n,lat,lng,dist:d,price:Math.round(18+r()*70),dur:(1+Math.floor(r()*5))+" h",rating:(4.3+r()*.7).toFixed(1)}});
+  return{hotels,gyms,tours};
+}
+const PLACES=Object.fromEntries(EVENTS.map(e=>[e.id,genPlaces(e)]));
+
+/* ======================= ÉTAT ======================= */
+const S={ev:EVENTS[0],radius:5,layers:{hotels:true,gyms:true,tours:true},listTab:"hotels",
+  dep:"CDG",pax:1,bags:0,sort:"price",dIn:null,dOut:null,hotel:null,flight:null,tours:new Set(),
+  user:null,premium:false,day:7};
+
+const $=s=>document.querySelector(s), eur=n=>Math.round(n).toLocaleString("fr-FR")+" €";
+const fmtDate=d=>new Date(d).toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"});
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+const nights=()=>Math.max(1,(new Date(S.dOut)-new Date(S.dIn))/864e5);
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._);t._=setTimeout(()=>t.classList.remove("on"),2600)}
+
+/* ======================= NAV ======================= */
+$("#nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;go(b.dataset.v)};
+function go(v){document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
+  if(v==="explore")setTimeout(()=>{map.invalidateSize();world.invalidateSize()},50);
+  if(v==="package")renderPackage(); if(v==="races")renderRaces(); if(v==="premium")renderPremium();
+  window.scrollTo({top:0,behavior:"smooth"})}
+
+/* ======================= EVENTS ======================= */
+const REGIONS=["Toutes","Europe","Amérique du Nord","Amérique du Sud","Asie-Pacifique","Afrique"];
+S.filter={q:"",region:"Toutes",month:""};
+const fmtRange=e=>{const o={day:"numeric",month:"short"},a=new Date(e.date),b=new Date(e.end);
+  return e.date===e.end?a.toLocaleDateString("fr-FR",{...o,year:"numeric"}):a.getMonth()===b.getMonth()?`${a.getDate()}–${b.toLocaleDateString("fr-FR",{...o,year:"numeric"})}`:`${a.toLocaleDateString("fr-FR",o)} – ${b.toLocaleDateString("fr-FR",{...o,year:"numeric"})}`};
+function upcoming(){const t=new Date().toISOString().slice(0,10);return EVENTS.filter(e=>e.end>=t)}
+function renderEvents(){
+  const f=S.filter,months=[...new Set(upcoming().map(e=>e.date.slice(0,7)))];
+  const list=upcoming().filter(e=>(f.region==="Toutes"||e.region===f.region)&&(!f.month||e.date.startsWith(f.month))&&(!f.q||(e.city+" "+e.country).toLowerCase().includes(f.q.toLowerCase())));
+  $("#evFilters").innerHTML=`<input id="evQ" placeholder="🔍 Ville ou pays…" value="${f.q}">
+    ${REGIONS.map(r=>`<button class="chip ${r===f.region?"on":""}" data-reg="${r}">${r}</button>`).join("")}
+    <select id="evM"><option value="">Tous les mois</option>${months.map(m=>`<option value="${m}" ${m===f.month?"selected":""}>${new Date(m+"-01").toLocaleDateString("fr-FR",{month:"long",year:"numeric"})}</option>`).join("")}</select>
+    <span class="count">${list.length} course${list.length>1?"s":""}</span>`;
+  $("#events").innerHTML=list.map(e=>`<button class="ev ${e.id===S.ev.id?"on":""}" data-id="${e.id}">
+    <span class="date">${fmtRange(e)}</span>
+    <b>${e.flag} ${e.city}</b><small>${e.country} · ${e.venue}</small>
+    <div class="tags">${e.tag?`<span class="tg hot">${e.tag}</span>`:""}${e.venueKnown?"":`<span class="tg">lieu à confirmer</span>`}</div></button>`).join("")||`<p style="color:var(--muted)">Aucune course pour ces filtres.</p>`;
+  S.filtered=list;renderWorld();
+  $("#tba").innerHTML=`<b>Bientôt :</b> ${TBA.join(" · ")} (date à venir). Le calendrier juillet–décembre 2027 (saison 2027/28) n'est pas encore publié par HYROX. <a href="https://hyroxfrance.com/fr/trouve-ta-course/" target="_blank" rel="noopener">Calendrier officiel ↗</a>`;
+  const q=$("#evQ");q.oninput=()=>{S.filter.q=q.value;const p=q.selectionStart;renderEvents();const n=$("#evQ");n.focus();n.setSelectionRange(p,p)};
+  $("#evM").onchange=e=>{S.filter.month=e.target.value;renderEvents()};
+}
+$("#evFilters").onclick=e=>{const b=e.target.closest("[data-reg]");if(!b)return;S.filter.region=b.dataset.reg;renderEvents()};
+$("#events").onclick=e=>{const b=e.target.closest(".ev");if(!b)return;selectEvent(b.dataset.id)};
+function selectEvent(id){
+  S.ev=EVENTS.find(e=>e.id===id);S.dIn=addDays(S.ev.date,-1);S.dOut=addDays(S.ev.date,1);S.hotel=null;S.flight=null;S.tours=new Set();
+  renderEvents();renderMap();renderList();
+}
+
+/* ======================= MAP ======================= */
+const map=L.map("map",{zoomControl:true}).setView([48.83,2.29],13);
+/* Fonds de carte sans clé API.
+   Plan & Sombre : cartes vectorielles OpenFreeMap (MapLibre GL) — repli automatique sur Esri si WebGL indisponible.
+   Satellite : Esri World Imagery. En production : MapTiler / Mapbox avec clé. */
+const ESRI="https://server.arcgisonline.com/ArcGIS/rest/services/",ATT="Tiles &copy; Esri — Esri, HERE, Garmin, OpenStreetMap contributors";
+const OFM_ATT='<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; OpenStreetMap';
+const GL=(()=>{try{return !!(L.maplibreGL&&window.maplibregl&&maplibregl.supported?maplibregl.supported():document.createElement("canvas").getContext("webgl"))}catch(e){return false}})();
+function baseLayers(m){
+  if(window.WORLD_GEO){ /* version web hébergée : pas de tuiles externes, pays dessinés depuis les données intégrées */
+    m.getContainer().classList.add("offline");
+    const land=L.geoJSON(WORLD_GEO,{style:{color:"#3A3A55",weight:.6,fillColor:"#1C1C2A",fillOpacity:1},interactive:false}).addTo(m);
+    return {"🌙 Sombre":land};
+  }
+  const t=(path,o={})=>L.tileLayer(ESRI+path+"/MapServer/tile/{z}/{y}/{x}",{attribution:ATT,maxZoom:19,...o});
+  const v=style=>L.maplibreGL({style:"https://tiles.openfreemap.org/styles/"+style,attribution:OFM_ATT});
+  const L1=GL?{
+    "🗺️ Plan":v("liberty"),
+    "🌙 Sombre":v("dark"),
+    "🛰️ Satellite":L.layerGroup([t("World_Imagery"),t("Reference/World_Boundaries_and_Places")])
+  }:{
+    "🗺️ Plan":t("World_Street_Map"),
+    "🌙 Sombre":L.layerGroup([t("Canvas/World_Dark_Gray_Base",{maxZoom:16}),t("Canvas/World_Dark_Gray_Reference",{maxZoom:16})]),
+    "🛰️ Satellite":L.layerGroup([t("World_Imagery"),t("Reference/World_Boundaries_and_Places")])
+  };
+  L1["🗺️ Plan"].addTo(m);L.control.layers(L1,null,{position:"topright",collapsed:false}).addTo(m);return L1;
+}
+baseLayers(map);
+const grp=L.layerGroup().addTo(map);
+const pin=(c,e)=>L.divIcon({className:"",html:`<div class="pin" style="background:${c}"><span>${e}</span></div>`,iconSize:[28,28],iconAnchor:[14,28],popupAnchor:[0,-26]});
+const COL={hotels:"#FF2E88",gyms:"#B8FF3D",tours:"#2EC5FF"},EMO={hotels:"🏨",gyms:"🏋️",tours:"🎟"};
+function inRadius(arr){return arr.filter(p=>p.dist<=S.radius).sort((a,b)=>a.price-b.price)}
+function renderMap(){
+  grp.clearLayers();const ev=S.ev,P=PLACES[ev.id];
+  L.circle([ev.lat,ev.lng],{radius:S.radius*1000,color:"#FF2E88",weight:1.5,fillColor:"#8B5CFF",fillOpacity:.08,dashArray:"6 6"}).addTo(grp);
+  L.marker([ev.lat,ev.lng],{icon:L.divIcon({className:"",html:'<div class="venue">🏁</div>',iconSize:[40,40],iconAnchor:[20,20]}),zIndexOffset:1000})
+    .bindPopup(`<b>${ev.flag} ${ev.city}</b><br>${ev.venue}<br>${fmtRange(ev)}${ev.venueKnown?"":"<br><i>Lieu pas encore communiqué : position au centre-ville</i>"}<br><a href="${ev.url}" target="_blank" rel="noopener">Billetterie officielle ↗</a>`).addTo(grp);
+  for(const k of ["hotels","gyms","tours"]){ if(!S.layers[k])continue;
+    inRadius(P[k]).forEach(p=>L.marker([p.lat,p.lng],{icon:pin(COL[k],EMO[k])})
+      .bindPopup(`<b>${p.name}</b><br>${p.dist.toFixed(1)} km du site<br>${k==="hotels"?"à partir de "+eur(p.price)+" / nuit":k==="gyms"?"Day pass "+eur(p.price):eur(p.price)+" · "+p.dur}<br><a href="https://www.google.com/maps/search/?api=1&query=${p.lat.toFixed(5)},${p.lng.toFixed(5)}" target="_blank" rel="noopener">Voir sur Google Maps ↗</a><br><br><button class="btn sm" onclick="addFromMap('${k}','${p.id}')">${k==="gyms"?"Voir":"Ajouter au package"}</button>`).addTo(grp));
+  }
+  map.fitBounds(L.latLng(ev.lat,ev.lng).toBounds(S.radius*2200));
+}
+window.addFromMap=(k,id)=>{const p=PLACES[S.ev.id][k].find(x=>x.id===id);
+  if(k==="hotels"){S.hotel=p;toast("🏨 "+p.name+" sélectionné")} else if(k==="tours"){S.tours.add(p.id);toast("🎟 "+p.name+" ajouté")} else toast("🏋️ "+p.name+" – day pass "+eur(p.price));
+  renderList()};
+document.querySelectorAll("[data-layer]").forEach(b=>b.onclick=()=>{const k=b.dataset.layer;S.layers[k]=!S.layers[k];b.classList.toggle("on",S.layers[k]);renderMap()});
+$("#radius").oninput=e=>{S.radius=+e.target.value;$("#radiusVal").textContent=S.radius+" km";renderMap();renderList()};
+
+/* ======================= LISTE ======================= */
+$("#listTabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.listTab=b.dataset.t;
+  document.querySelectorAll("#listTabs button").forEach(x=>x.classList.toggle("on",x===b));renderList()};
+function renderList(){
+  const k=S.listTab,arr=inRadius(PLACES[S.ev.id][k]);
+  const best=arr[0]?.id;
+  $("#list").innerHTML=(arr.length?"":`<p style="color:var(--muted)">Aucun résultat dans ce rayon.</p>`)+arr.map(p=>{
+    const sel=(k==="hotels"&&S.hotel?.id===p.id)||(k==="tours"&&S.tours.has(p.id));
+    const sub=k==="hotels"?`${"★".repeat(p.stars)} · ${p.rating}/10 · ${p.dist.toFixed(1)} km`:k==="gyms"?`${p.dist.toFixed(1)} km${p.hyrox?" · équipement Hyrox-friendly (sled, SkiErg, rameur)":""}`:`⭐ ${p.rating} · ${p.dur} · ${p.dist.toFixed(1)} km`;
+    return `<div class="item ${sel?"sel":""}" data-k="${k}" data-id="${p.id}">
+      <div class="ic" style="background:${COL[k]}22">${EMO[k]}</div>
+      <div class="meta"><b>${p.name}${p.id===best?'<span class="badge">MEILLEUR PRIX</span>':""}</b><small>${sub}</small></div>
+      <div class="price">${eur(p.price)}<small>${k==="hotels"?"/ nuit":k==="gyms"?"day pass":"/ pers."}</small></div></div>`}).join("")
+    +(k!=="gyms"?`<button class="btn" style="margin-top:8px" onclick="go('package')">Voir mon package →</button>`:"");
+}
+$("#list").onclick=e=>{const it=e.target.closest(".item");if(!it)return;const{k,id}=it.dataset,p=PLACES[S.ev.id][k].find(x=>x.id===id);
+  map.setView([p.lat,p.lng],15);
+  if(k==="hotels")S.hotel=S.hotel?.id===id?null:p;
+  if(k==="tours")S.tours.has(id)?S.tours.delete(id):S.tours.add(id);
+  renderList()};
+
+/* ======================= PACKAGE ======================= */
+$("#dep").innerHTML=AIRPORTS.map(a=>`<option value="${a[0]}">${a[1]} (${a[0]})</option>`).join("");
+function flightsFor(){
+  const a=AIRPORTS.find(x=>x[0]===S.dep),ev=S.ev,d=km(a[2],a[3],ev.ap[0],ev.ap[1]);
+  const r=rng(S.dep+ev.id+S.dIn+S.dOut);
+  if(d<60) return[{id:"train",carrier:"Sur place",type:"🚇",dur:30,price:10,note:"Course dans ta ville : transports en commun"}];
+  if(d<350) return[{id:"train",carrier:"Train",type:"🚆",dur:Math.round(d/2.3),price:Math.round((25+d*.12)*2),note:"Trajet court : train conseillé (A/R)"}];
+  const carriers=["SkyJet","AeroLow","EuroWings Air","BlueLine"];
+  return carriers.map((c,i)=>{const dur=Math.round(d/11+40+r()*90);const low=i===1||i===2;
+    return{id:"f"+i,carrier:c,type:"✈️",dur,stops:r()>.75?1:0,price:Math.round((35+d*.08)*(.75+r()*.9)*2),bagPrice:low?40:30,bagIncl:i===3,
+      out:`${String(6+Math.floor(r()*14)).padStart(2,"0")}:${["05","20","35","50"][i]}`,note:""}});
+}
+function renderPackage(){
+  const ev=S.ev;$("#pkgTitle").innerHTML=`Package <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">${ev.city}</span>`;
+  $("#dep").value=S.dep;$("#dIn").value=S.dIn;$("#dOut").value=S.dOut;$("#pax").textContent=S.pax;$("#bags").textContent=S.bags;$("#sort").value=S.sort;
+  let fl=flightsFor();fl.sort((a,b)=>S.sort==="price"?a.price-b.price:a.dur-b.dur);
+  if(!S.flight||!fl.find(f=>f.id===S.flight))S.flight=fl.slice().sort((a,b)=>a.price-b.price)[0].id;
+  $("#flights").innerHTML=fl.map((f,i)=>`<div class="flight ${f.id===S.flight?"sel":""}" data-f="${f.id}">
+    <div style="font-size:22px">${f.type}</div>
+    <div class="t"><b>${f.carrier}</b> ${f.id!=="train"?`· ${S.dep} → ${ev.iata} · départ ${f.out}`:""}
+      <small>${Math.floor(f.dur/60)}h${String(f.dur%60).padStart(2,"0")} ${f.stops?"· 1 escale":f.id!=="train"?"· direct":""} ${f.bagIncl?"· bagage inclus":f.bagPrice?"· bagage +"+f.bagPrice+" €":""} ${f.note}</small></div>
+    <div class="price">${eur(f.price)}<small>A/R / pers.</small></div></div>`).join("");
+  // hôtels : top 4 dans 5 km
+  const hs=inRadius(PLACES[ev.id].hotels).slice(0,4);
+  if(!S.hotel)S.hotel=hs[0];
+  $("#pkgHotels").innerHTML=hs.concat(hs.find(h=>h.id===S.hotel.id)?[]:[S.hotel]).map(h=>`<div class="flight ${h.id===S.hotel.id?"sel":""}" data-h="${h.id}" style="${h.id===S.hotel.id?"border-color:var(--pink)":""}">
+    <div style="font-size:22px">🏨</div><div class="t"><b>${h.name}</b><small>${"★".repeat(h.stars)} · ${h.rating}/10 · ${h.dist.toFixed(1)} km du site</small></div>
+    <div class="price">${eur(h.price)}<small>/ nuit</small></div></div>`).join("");
+  const ts=PLACES[ev.id].tours;
+  $("#pkgTours").innerHTML=ts.map(t=>`<div class="flight ${S.tours.has(t.id)?"sel":""}" data-t="${t.id}">
+    <div style="font-size:22px">${S.tours.has(t.id)?"✅":"➕"}</div><div class="t"><b>${t.name}</b><small>⭐ ${t.rating} · ${t.dur} · ${t.dist.toFixed(1)} km</small></div>
+    <div class="price">${eur(t.price)}<small>/ pers.</small></div></div>`).join("");
+  renderSummary();
+}
+function computeBudget(ev,opts={}){ // utilisé par le package et "Mes courses"
+  const o={dep:S.dep,pax:1,bags:0,...opts};const save={...S};
+  S.ev=ev;S.dep=o.dep;S.dIn=addDays(ev.date,-1);S.dOut=addDays(ev.date,1);
+  const f=flightsFor().sort((a,b)=>a.price-b.price)[0],h=inRadius(PLACES[ev.id].hotels)[0];
+  Object.assign(S,save);
+  const transport=f.price,hotel=h.price*2,food=45*3,extra=30;return{transport,hotel,food,extra,total:transport+hotel+food+extra};
+}
+function renderSummary(){
+  const f=flightsFor().find(x=>x.id===S.flight),n=nights(),rooms=Math.ceil(S.pax/2);
+  const tr=f.price*S.pax,bag=f.bagIncl?0:(f.bagPrice||0)*S.bags,ho=S.hotel.price*n*rooms;
+  const tours=[...S.tours].map(id=>PLACES[S.ev.id].tours.find(t=>t.id===id));const to=tours.reduce((s,t)=>s+t.price,0)*S.pax;
+  const lines=[[`${f.type} ${f.carrier} × ${S.pax}`,tr],...(bag?[[`🧳 Bagages × ${S.bags}`,bag]]:[]),[`🏨 ${S.hotel.name} · ${n} nuit${n>1?"s":""} · ${rooms} ch.`,ho],...tours.map(t=>[`🎟 ${t.name}`,t.price*S.pax])];
+  $("#sum").innerHTML=`<div class="sumline"><span>Course</span><span>${S.ev.city} · ${fmtDate(S.ev.date)}</span></div>
+    <div class="sumline"><span>Dates</span><span>${fmtDate(S.dIn)} → ${fmtDate(S.dOut)}</span></div>`+lines.map(l=>`<div class="sumline"><span>${l[0]}</span><span>${eur(l[1])}</span></div>`).join("");
+  $("#total").textContent=eur(tr+bag+ho+to);
+}
+$("#v-package").addEventListener("click",e=>{
+  const s=e.target.closest("[data-s]");if(s){const k=s.dataset.s;S[k]=Math.max(k==="pax"?1:0,Math.min(9,S[k]+ +s.dataset.d));return renderPackage()}
+  const f=e.target.closest("[data-f]");if(f){S.flight=f.dataset.f;return renderPackage()}
+  const h=e.target.closest("[data-h]");if(h){S.hotel=PLACES[S.ev.id].hotels.find(x=>x.id===h.dataset.h);return renderPackage()}
+  const t=e.target.closest("[data-t]");if(t){S.tours.has(t.dataset.t)?S.tours.delete(t.dataset.t):S.tours.add(t.dataset.t);return renderPackage()}
+});
+$("#dep").onchange=e=>{S.dep=e.target.value;S.flight=null;renderPackage()};
+$("#sort").onchange=e=>{S.sort=e.target.value;renderPackage()};
+$("#dIn").onchange=e=>{S.dIn=e.target.value;if(S.dOut<=S.dIn)S.dOut=addDays(S.dIn,1);S.flight=null;renderPackage()};
+$("#dOut").onchange=e=>{S.dOut=e.target.value;if(S.dOut<=S.dIn)S.dIn=addDays(S.dOut,-1);S.flight=null;renderPackage()};
+$("#book").onclick=()=>toast("✅ Démo : en production, redirection vers le paiement sécurisé des partenaires.");
+
+/* ======================= AUTH (démo) ======================= */
+$("#loginBtn").onclick=()=>{
+  if(S.user){S.user=null;S.premium=false;$("#loginBtn").textContent="Se connecter";toast("Déconnecté")}
+  else{S.user={name:"Noémie",home:"CDG",races:["par26","lyo27","hkwc27"],division:"Open"};$("#loginBtn").textContent="👋 "+S.user.name;toast("Connecté (compte de démo)")}
+  const v=document.querySelector("#nav .on").dataset.v;if(v==="races")renderRaces();if(v==="premium")renderPremium();
+};
+
+/* ======================= MES COURSES ======================= */
+function renderRaces(){
+  if(!S.user){$("#racesBody").innerHTML=`<div class="card paywall"><h3>Connecte-toi pour voir tes courses</h3><p style="color:var(--muted)">Ajoute tes inscriptions et anticipe le budget de chaque déplacement.</p><button class="btn" onclick="$('#loginBtn').click()">Se connecter (démo)</button></div>`;return}
+  const today=new Date();today.setHours(0,0,0,0);
+  const cards=S.user.races.map(id=>{const ev=EVENTS.find(e=>e.id===id),b=computeBudget(ev,{dep:S.user.home}),days=Math.round((new Date(ev.date)-today)/864e5);
+    const months=Math.max(1,Math.floor(days/30));
+    const seg=[["Transport",b.transport,"var(--blue)"],["Hôtel",b.hotel,"var(--pink)"],["Repas",b.food,"var(--violet)"],["Divers",b.extra,"var(--lime)"]];
+    return`<div class="card race"><small style="color:var(--muted)">${S.user.division} · ${ev.venue}</small><h3>${ev.flag} ${ev.city}${ev.tag?` <span class="tg hot">${ev.tag}</span>`:""}</h3>
+      <div style="display:flex;justify-content:space-between;align-items:end"><div><span class="cd">J‑${days}</span><br><small style="color:var(--muted)">${fmtDate(ev.date)}</small></div>
+      <div class="price">${eur(b.total)}<small>budget estimé</small></div></div>
+      <div class="bud">${seg.map(s=>`<div style="flex:${s[1]};background:${s[2]}"></div>`).join("")}</div>
+      <div class="legend">${seg.map(s=>`<span><i style="background:${s[2]}"></i>${s[0]} ${eur(s[1])}</span>`).join("")}</div>
+      <div class="saving">💰 Mets de côté <b>${eur(b.total/months)}/mois</b> pendant ${months} mois</div>
+      <div style="display:flex;gap:8px;margin-top:12px"><button class="btn sm" onclick="selectEvent('${id}');go('package')">Planifier le voyage</button><button class="btn sm ghost" onclick="selectEvent('${id}');go('explore')">Voir la carte</button><a class="btn sm ghost" style="text-decoration:none" href="${ev.url}" target="_blank" rel="noopener">Billets ↗</a></div></div>`});
+  const sum=S.user.races.reduce((s,id)=>s+computeBudget(EVENTS.find(e=>e.id===id),{dep:S.user.home}).total,0);
+  $("#racesBody").innerHTML=`<div class="card" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <div><small style="color:var(--muted)">Budget saison (départ ${S.user.home})</small><div class="price" style="text-align:left;font-size:28px">${eur(sum)}</div></div>
+    <button class="btn ghost sm" onclick="toast('Production : synchro du calendrier ou import manuel des inscriptions')">＋ Ajouter une course</button></div>
+    <div class="races">${cards.join("")}</div>`;
+}
+
+/* ======================= PREMIUM J-7 ======================= */
+const PLAN={
+ 7:{train:["Dernière séance « clé » modérée : 60–70 % du volume habituel","Simulation courte : 2 stations + 1 km à allure course"],water:["Objectif ~35 ml/kg/jour","Une gourde pleine à chaque repas"],food:["Alimentation habituelle, rien de nouveau","Protéines à chaque repas"],sleep:["Vise 8 h, coucher à heure fixe","Écrans coupés 45 min avant"]},
+ 6:{train:["Footing facile 30–40 min","Mobilité hanches / chevilles 15 min"],water:["~35 ml/kg/jour","Électrolytes si séance chaude"],food:["Repas équilibrés","Teste ton petit-déj de course"],sleep:["8 h minimum"]},
+ 5:{train:["Séance intervalles courte : 4 × 3 min allure course","Technique wall balls & burpee broad jumps légère"],water:["~35 ml/kg/jour"],food:["Légumes, féculents, protéines"],sleep:["8 h · sieste 20 min possible"]},
+ 4:{train:["Récupération active : vélo / rameur facile 30 min"],water:["Urine claire = bon indicateur"],food:["Commence à augmenter légèrement les glucides"],sleep:["8 h"]},
+ 3:{train:["Volume réduit de moitié : 20–30 min avec quelques accélérations"],water:["~40 ml/kg/jour"],food:["Recharge glucidique : riz, pâtes, pain (≈ 6–8 g/kg)","Limite fibres et aliments gras"],sleep:["8–9 h"]},
+ 2:{train:["Repos ou marche + mobilité","Prépare ton sac (chaussures, gants, gels)"],water:["~40 ml/kg/jour + électrolytes"],food:["Recharge glucidique · évite l'alcool"],sleep:["La nuit la plus importante : 8–9 h"]},
+ 1:{train:["Activation 15 min : footing + 3 sprints","Repérage du site et de ta vague de départ"],water:["Petites gorgées régulières, pas d'excès"],food:["Dîner tôt et familier, riche en glucides","Rien de nouveau !"],sleep:["Coucher tôt — le stress est normal, la nuit d'avant compte plus"]},
+ 0:{train:["Échauffement 15–20 min : footing, mobilité, 2–3 accélérations","Arrive 60 min avant ta vague"],water:["500 ml 2 h avant, puis gorgées","Gel / boisson si course > 75 min"],food:["Petit-déj testé 3 h avant (glucides, peu de fibres)","Banane / gel 30 min avant"],sleep:["Réveil 3 h avant le départ"]},
+};
+function renderPremium(){
+  const ev=S.ev;$("#premSub").textContent=`Plan pour ${ev.city} · ${fmtDate(ev.date)} — hydratation, nutrition, sommeil, affûtage, avec rappels.`;
+  const days=[7,6,5,4,3,2,1,0];const p=PLAN[S.day];
+  const box=(t,ic,c,arr)=>`<div class="card tip"><h4><span class="k" style="background:${c}33">${ic}</span>${t}</h4><ul>${arr.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+  const content=`<div class="days">${days.map(d=>`<div class="day ${d===S.day?"on":""}" data-d="${d}"><b>${d?"J‑"+d:"J"}</b><small>${new Date(addDays(ev.date,-d)).toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}</small></div>`).join("")}</div>
+   <div class="tips">${box("Entraînement","🏋️","#FF2E88",p.train)}${box("Hydratation","💧","#2EC5FF",p.water)}${box("Nutrition","🍝","#B8FF3D",p.food)}${box("Sommeil","😴","#8B5CFF",p.sleep)}</div>
+   <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn" id="remind">🔔 Activer les rappels</button></div>
+   <p class="note">Conseils généraux, ne remplacent pas l'avis d'un coach ou d'un professionnel de santé. À personnaliser selon poids, division et objectif.</p>`;
+  if(!S.premium){$("#premBody").innerHTML=`<div style="position:relative"><div class="lock">${content}</div>
+     <div class="card paywall" style="position:absolute;inset:40px 10% auto 10%"><h3>Débloque la Prépa J‑7</h3><p style="color:var(--muted)">Plan jour par jour + rappels push (boire, manger, dormir, stop entraînement).</p>
+     <div class="price" style="text-align:center;margin-bottom:12px">4,99 €<small>/ mois · ou 9,99 € par course</small></div>
+     <button class="btn" id="goPrem">Essayer gratuitement (démo)</button></div></div>`;
+    $("#goPrem").onclick=()=>{S.premium=true;renderPremium();toast("⭐ Premium activé (démo)")};return}
+  $("#premBody").innerHTML=content;
+  document.querySelectorAll(".day").forEach(d=>d.onclick=()=>{S.day=+d.dataset.d;renderPremium()});
+  $("#remind").onclick=async()=>{if("Notification"in window){let r="denied";try{r=await Notification.requestPermission()}catch(e){}if(r==="granted"){new Notification("8Stations · Prépa",{body:"💧 Pense à boire un grand verre d'eau !"});return toast("🔔 Rappels activés")}}toast("🔔 Rappels activés (en app mobile : notifications push)")};
+}
+
+/* ======================= PLANISPHÈRE ======================= */
+const RCOL={"Europe":"#FF2E88","Amérique du Nord":"#2EC5FF","Amérique du Sud":"#B8FF3D","Asie-Pacifique":"#8B5CFF","Afrique":"#FFB23E"};
+const world=L.map("world",{worldCopyJump:true,minZoom:2,maxZoom:10,scrollWheelZoom:false,zoomSnap:.5}).setView([25,10],2);
+{const b=baseLayers(world);if(b["🗺️ Plan"]){world.removeLayer(b["🗺️ Plan"]);b["🌙 Sombre"].addTo(world);}}
+world.on("focus",()=>world.scrollWheelZoom.enable());world.on("blur",()=>world.scrollWheelZoom.disable());
+const wgrp=L.layerGroup().addTo(world);
+function renderWorld(){
+  wgrp.clearLayers();const list=S.filtered||upcoming();
+  const spots={};list.forEach(e=>{const k=e.lat.toFixed(2)+","+e.lng.toFixed(2);(spots[k]=spots[k]||[]).push(e)});
+  Object.values(spots).forEach(evs=>{
+    const e0=evs[0],sel=evs.some(e=>e.id===S.ev.id),c=RCOL[e0.region];
+    const m=L.circleMarker([e0.lat,e0.lng],{radius:sel?11:evs.length>1?8:6,color:sel?"#fff":c,weight:sel?3:1.5,fillColor:c,fillOpacity:sel?1:.75}).addTo(wgrp);
+    m.bindTooltip(`${e0.flag} <b>${e0.city}</b>${evs.length>1?` · ${evs.length} courses`:` · ${fmtRange(e0)}`}`,{direction:"top",offset:[0,-6]});
+    m.bindPopup(`<div class="wpop">${evs.map(e=>`<div><b>${e.flag} ${e.city}</b>${e.tag?` <span class="tg hot">${e.tag}</span>`:""}<br><small>${fmtRange(e)} · ${e.venue}</small><br>
+      <button class="btn sm" style="margin-top:6px" onclick="pickWorld('${e.id}')">Organiser mon voyage →</button></div>`).join("")}</div>`);
+    if(sel)m.bringToFront();
+  });
+  const fk=S.filter.region+"|"+S.filter.month+"|"+S.filter.q;
+  if(fk!==S.worldKey){S.worldKey=fk;
+    if(list.length&&(S.filter.region!=="Toutes"||S.filter.q||S.filter.month))world.flyToBounds(L.latLngBounds(list.map(e=>[e.lat,e.lng])).pad(.3),{maxZoom:6,duration:.6});
+    else world.setView([25,10],2);}
+  const regs=[...new Set(list.map(e=>e.region))];
+  $("#worldLegend").innerHTML=Object.entries(RCOL).filter(([r])=>regs.includes(r)).map(([r,c])=>`<span><i style="background:${c}"></i>${r} (${list.filter(e=>e.region===r).length})</span>`).join("");
+  $("#worldSub").textContent=`${list.length} course${list.length>1?"s":""} affichée${list.length>1?"s":""} selon tes filtres · clique sur un point pour l'organiser`;
+}
+window.pickWorld=id=>{world.closePopup();selectEvent(id);$("#events .ev.on")?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+  document.getElementById("map").scrollIntoView({behavior:"smooth",block:"center"});toast("📍 "+S.ev.city+" sélectionnée")};
+
+/* INIT */
+selectEvent("par26");
+</script>
+</body>
+</html>
