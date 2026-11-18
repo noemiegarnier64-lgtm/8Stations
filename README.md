@@ -12,6 +12,7 @@ Ouvre `index.html` dans un navigateur (aucune installation). Calendrier : offici
 - **Explorer** : choix de la course, carte (hôtels / salles / excursions) avec rayon réglable ≤ 5 km, liste triée au meilleur prix.
 - **Mon package** : vol/train + hôtel + location de voiture (optionnelle) + excursions présélectionnés au meilleur prix ; aéroport de départ, dates, voyageurs, bagages, catégorie de voiture, prise en charge (aéroport / près du site) et options modifiables.
 - **Mes courses** (connexion démo) : courses à venir, compte à rebours, budget estimé et épargne mensuelle conseillée.
+- **Outfit** : par course, format solo / duo femmes / duo hommes / duo mixte ; tenues identiques ou couleurs inversées (haut ↔ bas) en duo, short homme assorti en mixte ; looks prêts à porter, couleurs, coupes ; avatars avec photo du visage (gardée sur l'appareil) et teinte de peau ; enregistrement par course.
 - **Prépa J-7 (Premium)** : plan jour par jour entraînement / hydratation / nutrition / sommeil + rappels.
 
 ## Passage en production (API à brancher)
